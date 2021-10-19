@@ -1,0 +1,1 @@
+g++ -O2 -Wall -Wextra -Wconversion -Wsign-conversion -Wvla -pedantic *.cpp
