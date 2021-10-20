@@ -41,5 +41,6 @@ int main(){
        dans ce programme a && b > 0 donc pas besoin de la valeur absolue */
     ppmc = (a*b)/pgdc;
 
+    // Affiche le résultat
     cout << "le PPMC de " << a << " et " << b << " est : " << ppmc;
 }
