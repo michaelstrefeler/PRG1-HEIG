@@ -5,6 +5,7 @@
     Date de création: 20.10.21
 */
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -20,23 +21,15 @@ int gcd_euclid(int divisor_1, int divisor_2)
     return divisor_1;
 }
 
-int gdc_modular_exp(int a, int b)
+int gdc_modular_exp(int b, int e, int m)
 {
-    /*Input: b; e;m
-    Result: r = be mod m
-    r   1
-    while e > 0 do
-    if e mod 2 = 0 then
-    b   b2 mod m; e   e=2
-    else
-    r   r <-- b mod m; e   e <-- 1
-    end*/
-    return 0;
+    // b puissance e modulo m
+    return fmod(pow(b, e), m);
 }
 
 int main()
 {
-    int a, b;
+    int a, b, c;
     cout << "Donnez-moi deux entiers > 0 pour trouver leur PGDC: ";
     cin >> a >> b;
 
@@ -48,5 +41,14 @@ int main()
     }
 
     cout << "Le PGDC de " << a << " et " << b << " est " << gcd_euclid(a, b);
-    cout << "\nLe PGDC de " << a << " et " << b << " est " << gdc_modular_exp(a, b);
+    cout << "\n3 entier > 0 SVP pour trouver leur exponentiation modulaire: ";
+    cout << "\nBase, exponsant, modulo";
+    cin >> a >> b >> c;
+    while (a <= 0 or b <= 0 or c <= 0)
+    {
+        cout << "\n3 entiers > 0 SVP: ";
+        cin >> a >> b >> c;
+    }
+    cout << "\nExponentiation modulaire de  " << a << ", " << b << " et "
+         << c << " est " << gdc_modular_exp(a, b, c);
 }
