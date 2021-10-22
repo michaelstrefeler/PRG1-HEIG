@@ -9,6 +9,7 @@
 
 using namespace std;
 
+// PDGC de 2 int
 int gcd_euclid(int divisor_1, int divisor_2)
 {
     while (divisor_1 != divisor_2)
@@ -21,10 +22,27 @@ int gcd_euclid(int divisor_1, int divisor_2)
     return divisor_1;
 }
 
+// Exponetiation modulaire
+// int b: base
+// int e: exposant
+// int m: modulo
 int gdc_modular_exp(int b, int e, int m)
 {
-    // b puissance e modulo m
-    return fmod(pow(b, e), m);
+    int r = 1;
+    while (e > 0)
+    {
+        if (e % 2 == 0)
+        {
+            b = (b * b) % m;
+            e /= 2;
+        }
+        else
+        {
+            r = (r * b) % m;
+            e -= 1;
+        }
+    }
+    return r;
 }
 
 int main()
@@ -39,10 +57,10 @@ int main()
         cout << "2 entiers > 0 SVP: ";
         cin >> a >> b;
     }
-
+    
     cout << "Le PGDC de " << a << " et " << b << " est " << gcd_euclid(a, b);
     cout << "\n3 entier > 0 SVP pour trouver leur exponentiation modulaire: ";
-    cout << "\nBase, exponsant, modulo";
+    cout << "\nBase, exponsant, modulo : ";
     cin >> a >> b >> c;
     while (a <= 0 or b <= 0 or c <= 0)
     {
