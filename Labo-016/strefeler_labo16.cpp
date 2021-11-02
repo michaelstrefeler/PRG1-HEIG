@@ -1,5 +1,5 @@
 /*
-    But : Implémenter la méthode de cryptographie à clé publique RSA
+    But : Implanter la méthode de cryptographie à clé publique RSA
     Nom du fichier : strefeler_labo16.cpp
     Auteur : Michael Strefeler
     Date de création : 25.10.21
@@ -10,39 +10,41 @@
 
 using namespace std;
 
+const int MAX_VALUE = pow(2, 31) - 1; // 2^31 - 1
+
 // Exponetiation modulaire
 // base: base qu'on veut utiliser
-// exposant: mettre la base à cet exposant 
+// exponent: mettre la base à cet exposant
 // divisor: par quoi on veut diviser
-long long modularExp(long long base, long long exposant, long long divisor)
+// return: base^exposant mod divisor
+long long modularExp(long long base, long long exponent, long long divisor)
 {
-    long long r = 1;
-    while (exposant > 0)
+    long long result = 1;
+    while (exponent > 0)
     {
-        if (exposant % 2 == 0)
+        if (exponent % 2 == 0)
         {
             base = (base * base) % divisor;
-            exposant /= 2;
+            exponent /= 2;
         }
         else
         {
-            r = (r * base) % divisor;
-            exposant -= 1;
+            result = (result * base) % divisor;
+            exponent -= 1;
         }
     }
-    return r;
+    return result;
 }
 
 // Utilisé pour savoir si un int prime est premier
 // int prime: le nombre potentiellement premier
-// return true si prime est probablement premier
-// sinon return false
+// return:  true si prime est probablement premier sinon false
 bool isPrime(int prime)
 {
     // Générateur de nombre aléatoire de < prime
     auto gen_int = bind(uniform_int_distribution<int>(1, prime - 1),
-                        mt19937(92646));
-    int random; 
+                        mt19937(22101999));
+    int random;
     long long q, u;
 
     // 2 est le plus petit nombre premier
@@ -87,9 +89,10 @@ bool isPrime(int prime)
 // Plus grand diviseur commun de 2 nombres
 // long long a: premier nombre
 // long long b: deuxième nombre
+// return: PGDC de a et b
 long long gcd(long long a, long long b)
 {
-    // Boucle pour trouver le PGC
+    // Boucle pour trouver le PGDC
     while (a != b)
     {
         if (a > b)
@@ -98,35 +101,35 @@ long long gcd(long long a, long long b)
             b -= a;
     }
 
-    return a;
+    return a; // PGDC
 }
 
 // Algorithme d'Euclide étendu
 // int a: premier nombre
 // int b: deuxième nombre
+// return: e modulo (p −1)*(q −1)
 int euclidAlgo(int a, int b)
 {
-    int r = a;       // le PDGC de a et b
-    int r_prime = b; // valeur temporaire
-    int d = 0;       // l'inverse de b mod a
-    int d_prime = 1; // valeur temporaire
-    while (r_prime != 0)
+    int gcd = a;           // le PDGC de a et b
+    int gcd_prime = b;     // valeur temporaire
+    int inverse = 0;       // l'inverse de b mod a
+    int inverse_prime = 1; // valeur temporaire
+    while (gcd_prime != 0)
     {
-        int q = r / r_prime; // partie entière de r et r'
-        int rs = r;
-        int ds = d;
-        r = r_prime;
-        d = d_prime;
-        r_prime = rs - q * r_prime;
-        d_prime = ds - q * d_prime;
+        int integer_part = gcd / gcd_prime; // partie entière de r et r'
+        int temp_gcd = gcd;
+        int temp_inverse = inverse;
+        gcd = gcd_prime;
+        inverse = inverse_prime;
+        gcd_prime = temp_gcd - integer_part * gcd_prime;
+        inverse_prime = temp_inverse - integer_part * inverse_prime;
     }
-    if (d < 0)
+    if (inverse < 0)
     {
-        d = d + a;
+        inverse = inverse + a;
     }
-    return d;
+    return inverse;
 }
-
 
 int main()
 {
@@ -137,32 +140,40 @@ int main()
     // Vérifie que les nombres premiers sont distincts
     // Que p * q < 2^31 - 1 (valeur maximale du int)
     // Et vérifie que p et q sont premiers
-    if (p != q and (p * q) < (pow(2, 31) - 1) and isPrime(p) and isPrime(q))
+    if (p != q and (p * q) < MAX_VALUE and isPrime(p) and isPrime(q))
     {
         int x = (p - 1) * (q - 1);
+
         // Vérifie que e < (p - 1) * (q - 1), que e < 2^31-1
         // et que e est premier avec (p - 1) * (q - 1)
-        if (e < x and e < (pow(2, 31) - 1) and gcd(e, x) == 1)
+        if (e < x and e < MAX_VALUE and gcd(e, x) == 1)
         {
             int n = p * q;
             int inverse = euclidAlgo(x, e);
+
             // Générateur de nombre aléatoire utilisée pour le message
             // Qui doit être < n
             auto gen_message = bind(uniform_int_distribution<int>(1, n - 1),
-                                    mt19937(221099));
-            int message = gen_message();
-            // divisor^e mod n
-            long long encrypted_message = modularExp(message, e, n);
-            // (divisor^e mod n)^d mod n
-            long long decrypted_message = modularExp(encrypted_message, inverse, n);
+                                    mt19937(22101999));
 
-            cout << "Cle publique (" << n << ", " << e << "). Cle secrete: "
+            cout << "\nCle publique (" << n << ", " << e << "). Cle secrete: "
                  << inverse << endl;
+            for (int i = 0; i < 10; i++)
+            {
+                int message = gen_message();
 
-            // Vérifie qu'on arrive à trouver le message avec le message chiffré
-            cout << "Message : " << message
-                 << " Message crypte : " << encrypted_message << endl
-                 << "Message decrypte: " << decrypted_message << endl;
+                // divisor^e mod n
+                long long encrypted_message = modularExp(message, e, n);
+
+                // (divisor^e mod n)^d mod n
+                long long decrypted_message = modularExp(encrypted_message,
+                                                         inverse, n);
+
+                // Vérifie qu'on arrive à retrouver le message
+                cout << "\nMessage : " << message
+                     << " Message crypte : " << encrypted_message << endl
+                     << "Message decrypte: " << decrypted_message << endl;
+            }
         }
         else
         {
