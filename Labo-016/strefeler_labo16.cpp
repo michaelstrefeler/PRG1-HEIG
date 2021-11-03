@@ -1,25 +1,27 @@
 /*
-    But : Implanter la méthode de cryptographie à clé publique RSA
-    Nom du fichier : strefeler_labo16.cpp
-    Auteur : Michael Strefeler
-    Date de création : 25.10.21
+    Goal : Implement the RSA public key cryptosystem
+    File name : strefeler_labo16.cpp
+    Author : Michael Strefeler
+    Creation date : 25.10.21
 */
+#include <climits>
 #include <iostream>
 #include <functional>
+#include <time.h>
 #include <random>
 
 using namespace std;
 
-const int MAX_VALUE = pow(2, 31) - 1; // 2^31 - 1
+const int32_t MAX_VALUE = numeric_limits<int32_t>::max(); // 2^31 - 1
 
-// Exponetiation modulaire
-// base: base qu'on veut utiliser
-// exponent: mettre la base à cet exposant
-// divisor: par quoi on veut diviser
+// Modular exponentiation
+// base: the base that we want to use
+// exponent: exponent of the base
+// divisor: what we're divding the rest by
 // return: base^exposant mod divisor
-long long modularExp(long long base, long long exponent, long long divisor)
+int64_t modularExp(int64_t base, int64_t exponent, int64_t divisor)
 {
-    long long result = 1;
+    int64_t result = 1;
     while (exponent > 0)
     {
         if (exponent % 2 == 0)
@@ -36,18 +38,18 @@ long long modularExp(long long base, long long exponent, long long divisor)
     return result;
 }
 
-// Utilisé pour savoir si un int prime est premier
-// int prime: le nombre potentiellement premier
-// return:  true si prime est probablement premier sinon false
-bool isPrime(int prime)
+// Used to check if a number is prime with high probability
+// int prime: potentially prime number we want to test
+// return: true if the number is prime and false if that's not the case
+bool isPrime(int32_t prime)
 {
-    // Générateur de nombre aléatoire de < prime
-    auto gen_int = bind(uniform_int_distribution<int>(1, prime - 1),
-                        mt19937(22101999));
-    int random;
-    long long q, u;
+    // Random number generator from 1 to prime - 1
+    auto gen_int = bind(uniform_int_distribution<int32_t>(1, prime - 1),
+                        mt19937(unsigned(time(NULL))));
+    int32_t random;
+    int64_t q, u;
 
-    // 2 est le plus petit nombre premier
+    // 2 is the smallest prime number
     if (prime < 2)
     {
         return false;
@@ -57,15 +59,14 @@ bool isPrime(int prime)
         return true;
     }
 
-    // Boucle pour trouver si le nombre est probablement premier
-    for (int i = 0; i < 10; ++i)
+    // Loop to find out if the number is prime with high probability
+    for (int32_t i = 0; i < 10; ++i)
     {
-        // Nombre aléatoire généré à chaque instance de la boucle
+        // Random number generated at each instance of the loop
         random = gen_int();
 
-        // si aléatoire^p-1 divisor p != 1
-        // modularExp est utilisé
-        // sinon cette fonction ne marche pas avec des nombres > 17
+        // if random^p-1 % p != 1
+        // modularExp is used to suppport numbers > 17
         if (modularExp(random, prime - 1, prime) != 1)
         {
             return false;
@@ -86,22 +87,22 @@ bool isPrime(int prime)
     return true;
 }
 
-// Algorithme d'Euclide étendu
-// int a: premier nombre
-// int b: deuxième nombre
-// int& inverse: l'inverse de b mod a
-// return: le PGDC des deux nombres
-int euclidAlgo(int a, int b, int& inverse)
+// Extended euclid algorithm
+// int a: first number
+// int b: second number
+// int& inverse: inverse of b mod a
+// return: the Greatest common divisor of a and b
+int32_t euclidAlgo(int32_t a, int32_t b, int32_t& inverse)
 {
-    int gcd = a;           // le PDGC de a et b
-    int gcd_prime = b;
-    inverse = 0;       // l'inverse de b mod a
-    int inverse_prime = 1;
+    int32_t gcd = a;
+    int32_t gcd_prime = b;
+    inverse = 0;
+    int32_t inverse_prime = 1;
     while (gcd_prime != 0)
     {
-        int integer_part = gcd / gcd_prime; // partie entière de r et r'
-        int temp_gcd = gcd;
-        int temp_inverse = inverse;
+        int32_t integer_part = gcd / gcd_prime;
+        int32_t temp_gcd = gcd;
+        int32_t temp_inverse = inverse;
         gcd = gcd_prime;
         inverse = inverse_prime;
         gcd_prime = temp_gcd - integer_part * gcd_prime;
@@ -116,59 +117,57 @@ int euclidAlgo(int a, int b, int& inverse)
 
 int main()
 {
-    int p, q, e;
-    cout << "Donnez-moi deux nombres premier distincts et un nombre premier < le produit des deux autres: ";
+    int32_t p, q, e;
+    cout << "Enter two prime numbers and a coprime with the other two numbers: ";
     cin >> p >> q >> e;
 
-    // Vérifie que les nombres premiers sont distincts
-    // Que p * q < 2^31 - 1 (valeur maximale du int)
-    // Et vérifie que p et q sont premiers
+    // Checks that p and q aren't equal, that p * q < 2^31 - 1
+    // and that p and q are prime
     if (p != q and (p * q) < MAX_VALUE and isPrime(p) and isPrime(q))
     {
-        int x = (p - 1) * (q - 1);
+        int32_t phi = (p - 1) * (q - 1);
 
-        // Vérifie que e < (p - 1) * (q - 1), que e < 2^31-1
-        // et que e est premier avec (p - 1) * (q - 1)
-        int inverse;
-        if (e < x and e < MAX_VALUE and euclidAlgo(x, e, inverse) == 1)
+        // Checks that e < (p - 1) * (q - 1), that e < 2^31-1
+        // and e is coprime with (p - 1) * (q - 1)
+        int32_t inverse;
+        if (e < phi and e < MAX_VALUE and euclidAlgo(phi, e, inverse) == 1)
         {
-            int n = p * q;
+            int32_t n = p * q;
 
-            // Générateur de nombre aléatoire utilisée pour le message
-            // Qui doit être < n
-            auto gen_message = bind(uniform_int_distribution<int>(1, n - 1),
-                                    mt19937(22101999));
+            // Random number generator for the message < n with a distinct seed
+            auto gen_message = bind(uniform_int_distribution<int32_t>(1, n - 1),
+                                    mt19937(unsigned(time(NULL))));
 
-            cout << "\nCle publique (" << n << ", " << e << "). Cle secrete: "
+            cout << "\nPublic key (" << n << ", " << e << ")\nPrivate key: "
                  << inverse << endl;
-            for (int i = 0; i < 10; i++)
+            for (int32_t i = 0; i < 10; i++)
             {
-                int message = gen_message();
+                int32_t message = gen_message();
 
                 // message^e mod n
-                long long encrypted_message = modularExp(message, e, n);
+                int64_t encrypted_message = modularExp(message, e, n);
 
                 // (message^e mod n)^d mod n
-                long long decrypted_message = modularExp(encrypted_message,
+                int64_t decrypted_message = modularExp(encrypted_message,
                                                          inverse, n);
 
-                // Vérifie qu'on arrive à retrouver le message
+                // Checks that we can decrypt the message
                 cout << "\nMessage : " << message
-                     << " Message crypte : " << encrypted_message << endl
-                     << "Message decrypte: " << decrypted_message << endl;
+                     << "\nEncrypted message : " << encrypted_message << endl
+                     << "Decrypted message: " << decrypted_message << endl;
             }
         }
         else
         {
-            // Affiche ce message quand l'utilisateur fait une erreur
-            cerr << "Essayez de nouveau" << endl;
-            return EXIT_FAILURE; // Ferme le programme
+            // Error message
+            cerr << "Try again" << endl;
+            return EXIT_FAILURE; // Closes the program
         }
     }
     else
     {
-        // Affiche ce message quand l'utilisateur fait une erreur
-        cerr << "Essayez de nouveau" << endl;
-        return EXIT_FAILURE; // Ferme le programme
+        // Error message
+        cerr << "Try again" << endl;
+        return EXIT_FAILURE; // Closes the program
     }
 }
