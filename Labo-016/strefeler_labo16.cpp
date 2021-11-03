@@ -86,34 +86,17 @@ bool isPrime(int prime)
     return true;
 }
 
-// Plus grand diviseur commun de 2 nombres
-// long long a: premier nombre
-// long long b: deuxième nombre
-// return: PGDC de a et b
-long long gcd(long long a, long long b)
-{
-    // Boucle pour trouver le PGDC
-    while (a != b)
-    {
-        if (a > b)
-            a -= b;
-        else
-            b -= a;
-    }
-
-    return a; // PGDC
-}
-
 // Algorithme d'Euclide étendu
 // int a: premier nombre
 // int b: deuxième nombre
-// return: e modulo (p −1)*(q −1)
-int euclidAlgo(int a, int b)
+// int& inverse: l'inverse de b mod a
+// return: le PGDC des deux nombres
+int euclidAlgo(int a, int b, int& inverse)
 {
     int gcd = a;           // le PDGC de a et b
-    int gcd_prime = b;     // valeur temporaire
-    int inverse = 0;       // l'inverse de b mod a
-    int inverse_prime = 1; // valeur temporaire
+    int gcd_prime = b;
+    inverse = 0;       // l'inverse de b mod a
+    int inverse_prime = 1;
     while (gcd_prime != 0)
     {
         int integer_part = gcd / gcd_prime; // partie entière de r et r'
@@ -128,7 +111,7 @@ int euclidAlgo(int a, int b)
     {
         inverse = inverse + a;
     }
-    return inverse;
+    return gcd;
 }
 
 int main()
@@ -146,10 +129,10 @@ int main()
 
         // Vérifie que e < (p - 1) * (q - 1), que e < 2^31-1
         // et que e est premier avec (p - 1) * (q - 1)
-        if (e < x and e < MAX_VALUE and gcd(e, x) == 1)
+        int inverse;
+        if (e < x and e < MAX_VALUE and euclidAlgo(x, e, inverse) == 1)
         {
             int n = p * q;
-            int inverse = euclidAlgo(x, e);
 
             // Générateur de nombre aléatoire utilisée pour le message
             // Qui doit être < n
@@ -162,10 +145,10 @@ int main()
             {
                 int message = gen_message();
 
-                // divisor^e mod n
+                // message^e mod n
                 long long encrypted_message = modularExp(message, e, n);
 
-                // (divisor^e mod n)^d mod n
+                // (message^e mod n)^d mod n
                 long long decrypted_message = modularExp(encrypted_message,
                                                          inverse, n);
 
