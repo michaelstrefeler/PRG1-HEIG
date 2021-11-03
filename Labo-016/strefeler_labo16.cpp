@@ -117,57 +117,48 @@ int32_t euclidAlgo(int32_t a, int32_t b, int32_t& inverse)
 
 int main()
 {
-    int32_t p, q, e;
-    cout << "Enter two prime numbers and a coprime with the other two numbers: ";
-    cin >> p >> q >> e;
+    int32_t p, q, e, inverse;
+    cout << "Enter two prime numbers: ";
+    cin >> p >> q;
 
-    // Checks that p and q aren't equal, that p * q < 2^31 - 1
-    // and that p and q are prime
-    if (p != q and (p * q) < MAX_VALUE and isPrime(p) and isPrime(q))
-    {
-        int32_t phi = (p - 1) * (q - 1);
-
-        // Checks that e < (p - 1) * (q - 1), that e < 2^31-1
-        // and e is coprime with (p - 1) * (q - 1)
-        int32_t inverse;
-        if (e < phi and e < MAX_VALUE and euclidAlgo(phi, e, inverse) == 1)
-        {
-            int32_t n = p * q;
-
-            // Random number generator for the message < n with a distinct seed
-            auto gen_message = bind(uniform_int_distribution<int32_t>(1, n - 1),
-                                    mt19937(unsigned(time(NULL))));
-
-            cout << "\nPublic key (" << n << ", " << e << ")\nPrivate key: "
-                 << inverse << endl;
-            for (int32_t i = 0; i < 10; i++)
-            {
-                int32_t message = gen_message();
-
-                // message^e mod n
-                int64_t encrypted_message = modularExp(message, e, n);
-
-                // (message^e mod n)^d mod n
-                int64_t decrypted_message = modularExp(encrypted_message,
-                                                         inverse, n);
-
-                // Checks that we can decrypt the message
-                cout << "\nMessage : " << message
-                     << "\nEncrypted message : " << encrypted_message << endl
-                     << "Decrypted message: " << decrypted_message << endl;
-            }
-        }
-        else
-        {
-            // Error message
-            cerr << "Try again" << endl;
-            return EXIT_FAILURE; // Closes the program
-        }
+    // User data entry validation for the two prime numbers
+    while(p == q or p * q > MAX_VALUE or !isPrime(p)or !isPrime(q)){
+        cout << "Enter two prime numbers: ";
+        cin >> p >> q;
     }
-    else
+    
+    int32_t phi = (p - 1) * (q - 1);
+    int32_t n = p * q;
+    
+    cout<< "\nEnter a number coprime to (p-1)(q-1): ";
+    cin >> e;
+
+    // User data validation for the coprime number
+    while(e > phi or euclidAlgo(phi, e, inverse) != 1){
+        cout << "\nEnter a number coprime to (p-1)(q-1): ";
+        cin >> e;
+    }
+
+    // Random number generator for the message < n with a distinct seed
+    auto gen_message = bind(uniform_int_distribution<int32_t>(1, n - 1),
+                            mt19937(unsigned(time(NULL))));
+
+    cout << "\nPublic key (" << n << ", " << e << ")\nPrivate key: "
+         << inverse << endl;
+    for (int32_t i = 1; i < 11; i++)
     {
-        // Error message
-        cerr << "Try again" << endl;
-        return EXIT_FAILURE; // Closes the program
+        int32_t message = gen_message();
+
+        // message^e mod n
+        int64_t encrypted_message = modularExp(message, e, n);
+
+        // (message^e mod n)^d mod n
+        int64_t decrypted_message = modularExp(encrypted_message,
+                                               inverse, n);
+
+        // Checks that we can decrypt the message
+        cout << "\nMessage " << i << ": " << message
+             << "\nEncrypted message " << i << ": " << encrypted_message << endl
+             << "Decrypted message: " << i << ": " << decrypted_message << endl;
     }
 }
