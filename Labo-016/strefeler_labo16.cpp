@@ -130,12 +130,12 @@ int main()
     int32_t phi = (p - 1) * (q - 1);
     int32_t n = p * q;
     
-    cout<< "\nEnter a number coprime to (p-1)(q-1): ";
+    cout<< "Enter a number coprime to (p-1)(q-1): ";
     cin >> e;
 
     // User data validation for the coprime number
     while(e > phi or euclidAlgo(phi, e, inverse) != 1){
-        cout << "\nEnter a number coprime to (p-1)(q-1): ";
+        cout << "Enter a number coprime to (p-1)(q-1): ";
         cin >> e;
     }
 
