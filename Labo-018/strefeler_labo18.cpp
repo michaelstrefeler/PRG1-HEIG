@@ -9,6 +9,7 @@
  *
  */
 
+#include <chrono>
 #include <cmath>
 #include <iostream>
 
@@ -23,10 +24,11 @@ const double PI = atan2(0, -1);
  */
 long double factorial(long double number)
 {
-    if (number <= 1)
-        return 1;
-    else
-        return number * factorial(number - 1);
+    long double result = 1.0;
+    for(long double i = number; i > 0; i--){
+        result *= i;
+    }
+    return result;
 }
 
 /**
@@ -57,6 +59,21 @@ int main()
 
     // convert deg to rad
     input = input * PI / 180;
+    // start clock
+    auto start = chrono::system_clock::now();
     cout << "Sin of x: " << maclaurin(input) << endl;
+    // end clock
+    auto end = chrono::system_clock::now();
+    //calculate and output duration
+    auto elapsed = chrono::duration_cast<chrono::milliseconds>(end - start);
+    cout << elapsed.count() << "ms" << endl;
+
+    // start second clock
+    auto start_sin = chrono::system_clock::now();
     cout << "sin of x using cmath : " << sin(input) << endl;
+    // end second clock
+    auto end_sin = chrono::system_clock::now();
+    // calculate and output second duration
+    auto elapsed_sin = chrono::duration_cast<chrono::milliseconds>(end_sin - start_sin);
+    cout << elapsed_sin.count() << "ms" << endl;
 }
