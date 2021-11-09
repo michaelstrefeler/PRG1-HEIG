@@ -17,9 +17,9 @@ const double PI = atan2(0, -1);
 
 /**
  * @brief Get factorial of number
- * 
- * @param number  
- * @return long double 
+ *
+ * @param number
+ * @return long double
  */
 long double factorial(long double number)
 {
@@ -31,30 +31,32 @@ long double factorial(long double number)
 
 /**
  * @brief maclaurin series to find sin of a number
- * 
- * @param number 
- * @return long double 
+ *
+ * @param number
+ * @return long double
  */
-long double maclaurin(double number){
+long double maclaurin(double number)
+{
     int i = 0;
     long double result = 0.0;
 
     // infinite sum not possible so sum 100 instead
-    while(i < 100){
-        result += pow(-1, i) * (pow(number, 2*i+1)/(factorial(2 * i + 1)));
+    while (i < 1000)
+    {
+        result += pow(-1, i) * (pow(number, 2 * i + 1) / (factorial(2 * i + 1)));
         i++;
     }
     return result;
 }
 
 int main()
-{   
+{
     double input;
     cout << "Give me a double in degrees : ";
     cin >> input;
 
     // convert deg to rad
-    input = input * PI/180;
+    input = input * PI / 180;
     cout << "Sin of x: " << maclaurin(input) << endl;
-    cout << "sin of x using cmath : " << sin(input)<< endl;
+    cout << "sin of x using cmath : " << sin(input) << endl;
 }
