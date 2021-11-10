@@ -14,12 +14,30 @@
 using namespace std;
 
 /**
+ * @brief Checks if all cells are in ascending order
+ *
+ * @param array the array to check
+ * @param array_size the size of the array
+ */
+bool isAscendingOrder(const int array[], size_t array_size)
+{
+    for (size_t i = 0; i < array_size - 1; ++i)
+    {
+        if (array[i] > array[i + 1])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
  * @brief Cout contents of table separated by spaces
- * 
+ *
  * @param array the array we want to show
  * @param array_size the size of said array
  */
-void showTableContents(int array[], size_t array_size)
+void showTableContents(const int array[], size_t array_size)
 {
     for (size_t i = 0; i < array_size; ++i)
     {
@@ -43,8 +61,6 @@ void moveRight(int array[], size_t array_size)
         array[i] = array[i - 1];
     }
     array[0] = right;
-
-    cout << "Move right result:" << endl;
     showTableContents(array, array_size);
 }
 
@@ -84,8 +100,6 @@ void DeleteMiddle(int array[], size_t &array_size)
             --array_size;
         }
     }
-
-    cout << "Delete middle result:" << endl;
     showTableContents(array, array_size);
 }
 
@@ -97,7 +111,22 @@ int main()
     int array_two[] = {0, 1, 2, 3, 4, 5, 6};
     const size_t CAPACITY_TWO = sizeof(array_two) / sizeof(int);
     size_t size_two = CAPACITY_TWO;
+    cout << "Move all cells right:" <<endl;
+
+    cout << "Before: ";
+    showTableContents(array_one, size_one);
+
+    cout << "After: ";
     moveRight(array_one, size_one);
+
+    cout << "\nRemove middle of array" <<endl;
     DeleteMiddle(array_one, size_one);
     DeleteMiddle(array_two, size_two);
+
+    cout << "\nCheck if array is strictly ascending: " << endl;
+    showTableContents(array_one, size_one);
+    cout << boolalpha << isAscendingOrder(array_one, size_one) << endl;
+    
+    showTableContents(array_two, size_two);
+    cout << boolalpha << isAscendingOrder(array_two, size_two) << endl;
 }
