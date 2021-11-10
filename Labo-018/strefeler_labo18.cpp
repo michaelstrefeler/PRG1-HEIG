@@ -59,6 +59,7 @@ int main()
 
     // convert deg to rad
     input = input * PI / 180;
+    input = fmod(input, 2 * PI); // Mod 2 PI so large values work
     // start clock
     auto start = chrono::system_clock::now();
     cout << "Sin of x: " << maclaurin(input) << endl;
