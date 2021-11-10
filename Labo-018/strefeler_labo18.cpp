@@ -15,6 +15,7 @@
 
 using namespace std;
 const double PI = atan2(0, -1);
+const int PRECISION = 21; // After 21 iterations you don't need to do any more
 
 /**
  * @brief Get factorial of number
@@ -42,8 +43,7 @@ long double maclaurin(double number)
     int i = 0;
     long double result = 0.0;
 
-    // infinite sum not possible so sum 100 instead
-    while (i < 1000)
+    while (i < PRECISION)
     {
         result += pow(-1, i) * (pow(number, 2 * i + 1) / (factorial(2 * i + 1)));
         i++;
