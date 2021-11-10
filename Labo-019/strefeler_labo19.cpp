@@ -103,6 +103,69 @@ void DeleteMiddle(int array[], size_t &array_size)
     showTableContents(array, array_size);
 }
 
+/**
+ * @brief Alternate addition and substraction of all elements of array
+ *
+ * @param array array we want to do the math with
+ * @param array_size size of the array
+ * @return int the alterating sum of the elements in the array
+ */
+int alternatingSum(const int array[], size_t array_size)
+{
+    int result = 0;
+    for (size_t i = 0; i < array_size; ++i)
+    {
+        if (i % 2 == 0)
+        {
+            result += array[i];
+        }
+        else
+        {
+            result -= array[i];
+        }
+    }
+    return result;
+}
+
+/**
+ * @brief Find a value and return where it is
+ * 
+ * @param array array used
+ * @param array_size size of array
+ * @param value value we want
+ * @param pos position
+ * @return size_t 
+ */
+size_t findValue(int array[], size_t array_size, int value, size_t pos = 0)
+{
+    for (; pos < array_size; ++pos)
+    {
+        if (array[pos] == value)
+            return pos;
+    }
+    return array_size;
+}
+
+/**
+ * @brief Delete a value and keep order
+ * 
+ * @param array array used
+ * @param array_size size of array
+ */
+void deleteKeepOrder(int array[], size_t &array_size)
+{
+    size_t pos = findValue(array, array_size, 2);
+
+    if (pos < array_size)
+    {
+        for (size_t i = pos + 1; i < array_size; ++i)
+        {
+            array[i - 1] = array[i];
+        }
+        --array_size;
+    }
+}
+
 int main()
 {
     int array_one[] = {0, 1, 2, 3, 4, 5};
@@ -111,7 +174,12 @@ int main()
     int array_two[] = {0, 1, 2, 3, 4, 5, 6};
     const size_t CAPACITY_TWO = sizeof(array_two) / sizeof(int);
     size_t size_two = CAPACITY_TWO;
-    cout << "Move all cells right:" <<endl;
+
+    int array_three[] = {1, 2, 3, 4};
+    const size_t CAPACITY_THREE = sizeof(array_three) / sizeof(int);
+    size_t size_three = CAPACITY_THREE;
+
+    cout << "Move all cells right:" << endl;
 
     cout << "Before: ";
     showTableContents(array_one, size_one);
@@ -119,14 +187,29 @@ int main()
     cout << "After: ";
     moveRight(array_one, size_one);
 
-    cout << "\nRemove middle of array" <<endl;
+    cout << "\nRemove middle of array" << endl;
+    cout << "Even number of cells before: ";
+    showTableContents(array_one, size_one);
+    cout << "After: ";
     DeleteMiddle(array_one, size_one);
+    cout << "Odd number of cells before: ";
+    showTableContents(array_two, size_two);
+    cout << "After: ";
     DeleteMiddle(array_two, size_two);
 
-    cout << "\nCheck if array is strictly ascending: " << endl;
+    cout << "\nCheck if array is strictly ascending:" << endl;
     showTableContents(array_one, size_one);
     cout << boolalpha << isAscendingOrder(array_one, size_one) << endl;
-    
+
     showTableContents(array_two, size_two);
     cout << boolalpha << isAscendingOrder(array_two, size_two) << endl;
+
+    cout << "\nAlternating sum of: ";
+    showTableContents(array_three, size_three);
+    cout << alternatingSum(array_three, size_three);
+
+    cout << "\nFind and remove 2 from: ";
+    showTableContents(array_three, size_three);
+    deleteKeepOrder(array_three, size_three);
+    showTableContents(array_three, size_three);
 }
