@@ -14,6 +14,21 @@
 using namespace std;
 
 /**
+ * @brief Cout contents of table separated by spaces
+ * 
+ * @param array the array we want to show
+ * @param array_size the size of said array
+ */
+void showTableContents(int array[], size_t array_size)
+{
+    for (size_t i = 0; i < array_size; ++i)
+    {
+        cout << array[i] << " ";
+    }
+    cout << endl;
+}
+
+/**
  * @brief Move all elements of an array to the right
  *
  * @param array array used
@@ -30,11 +45,7 @@ void moveRight(int array[], size_t array_size)
     array[0] = right;
 
     cout << "Move right result:" << endl;
-    for (size_t i = 0; i < array_size; ++i)
-    {
-        cout << array[i] << " ";
-    }
-    cout << endl;
+    showTableContents(array, array_size);
 }
 
 /**
@@ -75,11 +86,7 @@ void DeleteMiddle(int array[], size_t &array_size)
     }
 
     cout << "Delete middle result:" << endl;
-    for (size_t i = 0; i < array_size; ++i)
-    {
-        cout << array[i] << " ";
-    }
-    cout << endl;
+    showTableContents(array, array_size);
 }
 
 int main()
