@@ -12,25 +12,6 @@
 #include <iostream>
 
 using namespace std;
-
-/**
- * @brief Checks if all cells are in ascending order
- *
- * @param array the array to check
- * @param array_size the size of the array
- */
-bool isAscendingOrder(const int array[], size_t array_size)
-{
-    for (size_t i = 0; i < array_size - 1; ++i)
-    {
-        if (array[i] > array[i + 1])
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
 /**
  * @brief Cout contents of table separated by spaces
  *
@@ -101,6 +82,24 @@ void DeleteMiddle(int array[], size_t &array_size)
         }
     }
     showTableContents(array, array_size);
+}
+
+/**
+ * @brief Checks if all cells are in ascending order
+ *
+ * @param array the array to check
+ * @param array_size the size of the array
+ */
+bool isAscendingOrder(const int array[], size_t array_size)
+{
+    for (size_t i = 0; i < array_size - 1; ++i)
+    {
+        if (array[i] > array[i + 1])
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 /**
