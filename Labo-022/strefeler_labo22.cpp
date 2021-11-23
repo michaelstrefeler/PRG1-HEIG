@@ -13,6 +13,13 @@
 
 using namespace std;
 
+/**
+ * @brief Add 2 vectors reprensenting long numbers where each element is a digit
+ * 
+ * @param v1 first vector
+ * @param v2 second vector
+ * @return vector<int> the sum of the two numbers
+ */
 vector<int> add(vector<int> v1, vector<int> v2)
 {
     while (v1.size() > v2.size())
@@ -51,24 +58,28 @@ vector<int> add(vector<int> v1, vector<int> v2)
     return sum;
 }
 
-int fibonacci_n(vector<int> v)
-{
-    return v[0];
-}
-
 int main()
 {
-    vector<int> fibonacci = {0, 1, 1};
+    vector<int> v1 = {0};
+    vector<int> v2 = {1};
     int number;
     cout << "Give me a number and I'll tell you the nth number of the Fibonacci sequence: ";
     cin >> number;
-    vector<int> v1 = {1};
-    vector<int> v2 = {1};
     if(number == 0 or number == 1){
         cout << "0 is the first element in the sequence" << endl;
-        return EXIT_SUCCESS;
-    }
-    for(int i = 0; i < number; ++i){
-        
+    }else if(number == 2 or number == 3){
+        cout << "1 is the second and third element in the sequence" << endl;
+    }else{
+        // Loop to get nth number of the Fibonacci sequence
+        for (int i = 1; i < number; ++i)
+        {   
+            vector<int> temp = add(v1, v2);
+            v2 = v1;
+            v1 = temp;
+        }
+        // cout the number
+        for(size_t i = 0; i < v1.size(); ++i){
+            cout << v1.at(i);
+        }
     }
 }
