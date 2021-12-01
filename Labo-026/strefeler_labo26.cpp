@@ -6,7 +6,8 @@
  * @date 30-11-2021
  *
  * @copyright Copyright (c) 2021
- *
+ * use this commmand to run program
+ * a.exe < les_miserables.txt > out.txt
  */
 #include <iostream>
 #include <string>
