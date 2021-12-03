@@ -7,7 +7,6 @@
 #include <climits>
 #include <iostream>
 #include <functional>
-#include <time.h>
 #include <random>
 
 using namespace std;
@@ -120,11 +119,21 @@ int main()
     int32_t p, q, e, inverse;
     cout << "Enter two prime numbers: ";
     cin >> p >> q;
+    if (cin.fail())
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
 
     // User data entry validation for the two prime numbers
-    while(p == q or p * q > MAX_VALUE or !isPrime(p)or !isPrime(q)){
+    while(p == q or !isPrime(p) or !isPrime(q)){
         cout << "Enter two prime numbers: ";
         cin >> p >> q;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
     }
     
     int32_t phi = (p - 1) * (q - 1);
@@ -132,11 +141,21 @@ int main()
     
     cout<< "Enter a number coprime to (p-1)(q-1): ";
     cin >> e;
+    if (cin.fail())
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
 
     // User data validation for the coprime number
     while(e > phi or euclidAlgo(phi, e, inverse) != 1){
         cout << "Enter a number coprime to (p-1)(q-1): ";
         cin >> e;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
     }
 
     // Random number generator for the message < n with a distinct seed
