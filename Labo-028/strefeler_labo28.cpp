@@ -87,12 +87,6 @@ void count_and_output(vector<string> words, vector<string>& final, vector<int>& 
     {
         counts.push_back((int)count(words.begin(), words.end(), final.at(i)));
     }
-
-    // Outputs each word with how many times it shows up in the text
-    for (size_t i = 0; i < final.size(); ++i)
-    {
-        //cout << final.at(i) << " : " << counts.at(i) << endl;
-    }
 }
 int main(){
     string text;
