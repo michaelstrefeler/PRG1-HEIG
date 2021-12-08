@@ -98,7 +98,6 @@ int main()
     string text;
     getline(cin, text, '\0');
     vector<string> words{};
-    vector<string> final_count{};
     put_words_in_vector(words, text);
     count_and_output(words);
 }
