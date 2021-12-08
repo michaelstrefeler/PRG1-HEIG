@@ -138,84 +138,35 @@ void split_into_chars(vector<int> &chars, string text)
     }
 }
 
-
-void encrypt_text(vector<int32_t> &secret_text, vector<int> chars, int32_t e, int32_t n, int32_t inverse)
+void encrypt_text(vector<uint32_t> &secret_text, vector<int> chars, int32_t e, int32_t n, int32_t inverse)
 {
-    secret_text.push_back(n);
-    secret_text.push_back(inverse);
     for (size_t i = 0; i < chars.size(); ++i)
     {
         secret_text.push_back(modularExp(chars.at(i), e, n));
     }
 }
 
-void decrypt_text(vector<int32_t> &secret_text, vector<int> chars)
-{   
-    vector <int> v1{0,1};
-    int32_t n = v1.at(0);
-    int32_t inverse = v1.at(1);
-    v1.pop_back();
-    v1.pop_back();
-
-    secret_text.push_back(n);
-    secret_text.push_back(inverse);
-    for (size_t i = 0; i < chars.size(); ++i)
-    {
-        secret_text.push_back(modularExp(chars.at(i), inverse, n));
+void decrypt_text(string secret_text, string new_text, int32_t inverse, int32_t n)
+{
+    for (size_t i = 0; i < secret_text.size(); ++i){
+        
     }
 }
 
 int main()
 {
     vector<int> chars{};
-    vector<int32_t> secret_text{};
+    vector<uint32_t> secret_text{};
     string text;
     getline(std::ifstream("les_miserables.txt"), text, '\0');
     split_into_chars(chars, text);
     int32_t p, q, e, inverse;
-    cout << "Enter two prime numbers: ";
-    cin >> p >> q;
-    if (cin.fail())
-    {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
 
-    // User data entry validation for the two prime numbers
-    while (p == q or !isPrime(p) or !isPrime(q))
-    {
-        cout << "Enter two prime numbers: ";
-        cin >> p >> q;
-        if (cin.fail())
-        {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-    }
-
-    int32_t phi = (p - 1) * (q - 1);
+    p = 30011;
+    q = 30029;
     int32_t n = p * q;
 
-    cout << "Enter a number coprime to (p-1)(q-1): ";
-    cin >> e;
-    if (cin.fail())
-    {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
-
-    // User data validation for the coprime number
-    while (e > phi or euclidAlgo(phi, e, inverse) != 1)
-    {
-        cout << "Enter a number coprime to (p-1)(q-1): ";
-        cin >> e;
-        if (cin.fail())
-        {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-    }
-
+    e = 31237;
     encrypt_text(secret_text, chars, e, n, inverse);
 
     // Put in file
@@ -223,7 +174,7 @@ int main()
     for (size_t i = 0; i < secret_text.size(); ++i)
     {
         // Write to the file
-        output_file << secret_text.at(i) << " ";
+        output_file << secret_text.at(i) << "00700";
     }
 
     // Close the file
@@ -231,9 +182,12 @@ int main()
 
     string encrypted_text;
     getline(std::ifstream("output.txt"), encrypted_text, '\0');
-    vector<int32_t> encrypted {};
-    //decrypt_text();
+
+    vector<int32_t> encrypted{};
+    string new_text = "";
 
     string secrets;
     getline(std::ifstream("output.txt"), secrets, '\0');
+    
+    decrypt_text(secrets, new_text, inverse, n);
 }
