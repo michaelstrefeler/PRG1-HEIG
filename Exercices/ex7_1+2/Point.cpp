@@ -8,8 +8,6 @@
  * @copyright Copyright (c) 2021
  *
  */
-
-#include <iostream>
 #include "Point.hpp"
 
 /**
@@ -37,10 +35,21 @@ void Point::move(float move_x, float move_y)
 }
 
 /**
- * @brief Show the coordinates of the point (x, y)
+ * @brief Returns x coordinate
  *
+ * @return float
  */
-void Point::show()
+float Point::abscissa() const
 {
-    std::cout << "(" << x << ", " << y << ")" << std::endl;
+    return x;
+}
+
+/**
+ * @brief Returns y coordinate
+ *
+ * @return float
+ */
+float Point::ordinate() const
+{
+    return y;
 }

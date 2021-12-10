@@ -11,7 +11,8 @@ class Point
 public:
     Point(float abscissa, float ordinate);
     void move(float move_x, float move_y);
-    void show();
+    float abscissa() const;
+    float ordinate() const;
 };
 
 #endif
