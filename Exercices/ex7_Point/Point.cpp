@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2021
  *
  */
+#include <cmath>
 #include "Point.hpp"
 
 /**
@@ -52,4 +53,25 @@ float Point::abscissa() const
 float Point::ordinate() const
 {
     return y;
+}
+
+/**
+ * @brief Add the coordinates of two points together
+ *
+ * @param right right hand side of addition
+ * @return point corresponding to the result of the addition
+ */
+Point Point::operator+(const Point &right) const
+{
+    return Point(this->x + right.x, this->y + right.y);
+}
+
+float Point::rho() const
+{
+    return hypot(x, y);
+}
+
+float Point::theta() const
+{
+    return atan2(y, x);
 }
