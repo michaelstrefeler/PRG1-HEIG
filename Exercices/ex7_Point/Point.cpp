@@ -10,7 +10,6 @@
  */
 #include <cmath>
 #include "Point.hpp"
-
 /**
  * @brief Construct a new Point:: Point object
  *
@@ -73,5 +72,11 @@ float Point::rho() const
 
 float Point::theta() const
 {
-    return atan2(y, x);
+    return y < 0 ? atan2(y, x) + 2.0f * PI : atan2(y, x);
+}
+
+void Point::rotation(float angle){
+    float r = rho(), t = theta() + angle;
+    x = r * cos(t);
+    y = r * sin(t);
 }
