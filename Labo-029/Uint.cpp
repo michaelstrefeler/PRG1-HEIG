@@ -20,14 +20,24 @@ class Uint
 {
     vector<uint32_t> value = {};
     friend Uint operator+(Uint left, const Uint &right);
-    friend ostream &operator<<(ostream &lhs, const Uint &rhs);
+    friend Uint operator-(Uint left, const Uint &right);
+    friend ostream &operator<<(ostream &left, const Uint &right);
+    int compare(const Uint &left, const Uint &right) const;
 
 public:
-    Uint() : value(){};
-    Uint(string val);
-    Uint(uint32_t val);
-    Uint &operator+=(const Uint &right);
+    Uint() : value(){}; // Default constructor
+    Uint(string val); // String constructor
+    Uint(uint32_t val); // uint32_t constructor
+    Uint& operator+=(const Uint &right);
+    Uint& operator-=(const Uint &right);
     void carry();
+    // Comparison operator overloading
+    bool operator<(const Uint &right) const;
+    bool operator<=(const Uint &right) const;
+    bool operator>(const Uint &right) const;
+    bool operator>=(const Uint &right) const;
+    bool operator==(const Uint &right) const;
+    bool operator!=(const Uint &right) const;
 };
 
 Uint::Uint(string val)
@@ -36,7 +46,7 @@ Uint::Uint(string val)
     {
         if (isdigit(*i))
         {
-            value.push_back(*i - ZERO_ASCII);
+            value.push_back(uint32_t(*i) - ZERO_ASCII);
         }
     }
 }
@@ -86,13 +96,52 @@ Uint &Uint::operator+=(const Uint &right)
     return *this;
 }
 
-ostream &operator<<(ostream &lhs, const Uint &rhs)
+int Uint::compare(const Uint &left, const Uint &right) const
 {
-    for (auto i = rhs.value.begin(); i != rhs.value.end(); ++i)
-    {
-        lhs << *i;
+    if(left.value.size() == right.value.size()){
+        for(auto lhs = left.value.cbegin(), rhs = right.value.cbegin(); lhs != left.value.cend(); ++lhs, ++rhs){
+            if (*lhs < *rhs)
+                return -1;
+            else if (*lhs > *rhs)
+                return 1;
+        }
+        return 0;
+    }else if (left.value.size() < right.value.size()){
+        return -1;
     }
-    return lhs;
+    return 1;
+}
+
+bool Uint::operator<(const Uint &right) const { return compare(*this, right) == -1; }
+bool Uint::operator<=(const Uint &right) const { return compare(*this, right) != 1; }
+bool Uint::operator>(const Uint &right) const { return compare(*this, right) == 1; }
+bool Uint::operator>=(const Uint &right) const { return compare(*this, right) != -1; }
+bool Uint::operator==(const Uint &right) const { return compare(*this, right) == 0; }
+bool Uint::operator!=(const Uint &right) const { return compare(*this, right) != 0; }
+
+ostream &operator<<(ostream &left, const Uint &right)
+{
+    for (auto i = right.value.begin(); i != right.value.end(); ++i)
+    {
+        left << *i;
+    }
+    return left;
+}
+
+Uint operator-(Uint left, const Uint &right)
+{
+    left -= right;
+    return left;
+}
+
+Uint &Uint::operator-=(const Uint &right)
+{
+    if(*this < right){
+        cerr << "Error: Negative difference not allowed";
+    }else{
+        
+    }
+    return *this;
 }
 
 int main()
@@ -100,9 +149,10 @@ int main()
     string number;
     cout << "Give me an unsigned number: ";
     getline(cin, number);
-    // size_t nb = stoul(number);
-
     Uint n;           // Empty constructor
     n = Uint(number); // String constructor
     cout << "Number read " << n << endl;
+    Uint n1(10);
+    Uint n2(9);
+    cout << n1 - n2;
 }
