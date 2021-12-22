@@ -16,7 +16,11 @@
 using namespace std;
 
 const uint32_t ZERO_ASCII = 48;
-
+/**
+ * @brief Uint32_t class
+ * Arithmetic operations on numbers with arbitrary lengths
+ * Stored in a vector of uint32_t each cell is a digit
+ */
 class Uint
 {
     vector<uint32_t> value = {};
@@ -41,6 +45,11 @@ public:
     bool operator!=(const Uint &right) const;
 };
 
+/**
+ * @brief Construct a new Uint:: Uint object
+ * 
+ * @param val string
+ */
 Uint::Uint(string val)
 {
     for (auto i = val.begin(); i != val.end(); ++i)
@@ -52,11 +61,20 @@ Uint::Uint(string val)
     }
 }
 
+/**
+ * @brief Construct a new Uint:: Uint object
+ * 
+ * @param val uint32_t
+ */
 Uint::Uint(uint32_t val)
 {
     *this = to_string(val);
 }
 
+/**
+ * @brief Used for addition to separated numbers > 9 into 2 cells
+ * 
+ */
 void Uint::carry()
 {
     for (size_t i = 0; i < value.size(); i++)
@@ -77,12 +95,25 @@ void Uint::carry()
     }
 }
 
+/**
+ * @brief + operator overload
+ * 
+ * @param left left hand side of addition
+ * @param right right hand side of addition
+ * @return Uint sum
+ */
 Uint operator+(Uint left, const Uint &right)
 {
     left += right;
     return left;
 }
 
+/**
+ * @brief += operator overload
+ * 
+ * @param right right hand side of addition
+ * @return Uint& sum
+ */
 Uint &Uint::operator+=(const Uint &right)
 {
     for (size_t i = value.size(); i < right.value.size(); --i)
@@ -97,12 +128,25 @@ Uint &Uint::operator+=(const Uint &right)
     return *this;
 }
 
+/**
+ * @brief - operator overload
+ * 
+ * @param left left hand side of subtraction
+ * @param right right hand side of subtraction
+ * @return Uint difference
+ */
 Uint operator-(Uint left, const Uint &right)
 {
     left -= right;
     return left;
 }
 
+/**
+ * @brief -= operator overload
+ * 
+ * @param right right hand side of subtraction
+ * @return Uint& difference
+ */
 Uint &Uint::operator-=(const Uint &right)
 {
     Uint temp = right;
@@ -136,6 +180,13 @@ Uint &Uint::operator-=(const Uint &right)
     return *this;
 }
 
+/**
+ * @brief Compare two Uints
+ * 
+ * @param left Uint on the left
+ * @param right Uint on the right
+ * @return int -1, 0 or 1. -1 if left < right, 0 if equal and 1 otherwise
+ */
 int Uint::compare(const Uint &left, const Uint &right) const
 {
     if (left.value.size() == right.value.size())
@@ -163,6 +214,13 @@ bool Uint::operator>=(const Uint &right) const { return compare(*this, right) !=
 bool Uint::operator==(const Uint &right) const { return compare(*this, right) == 0; }
 bool Uint::operator!=(const Uint &right) const { return compare(*this, right) != 0; }
 
+/**
+ * @brief << operator overload to show the value on the screen
+ * 
+ * @param left ostream
+ * @param right Uint to show
+ * @return ostream& output
+ */
 ostream &operator<<(ostream &left, const Uint &right)
 {
     for (auto i = right.value.begin(); i != right.value.end(); ++i)
