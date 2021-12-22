@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2021
  *
  */
+#include <algorithm>
 #include <iostream>
 #include <iterator>
 #include <string>
@@ -26,10 +27,10 @@ class Uint
 
 public:
     Uint() : value(){}; // Default constructor
-    Uint(string val); // String constructor
+    Uint(string val);   // String constructor
     Uint(uint32_t val); // uint32_t constructor
-    Uint& operator+=(const Uint &right);
-    Uint& operator-=(const Uint &right);
+    Uint &operator+=(const Uint &right);
+    Uint &operator-=(const Uint &right);
     void carry();
     // Comparison operator overloading
     bool operator<(const Uint &right) const;
@@ -96,17 +97,60 @@ Uint &Uint::operator+=(const Uint &right)
     return *this;
 }
 
+Uint operator-(Uint left, const Uint &right)
+{
+    left -= right;
+    return left;
+}
+
+Uint &Uint::operator-=(const Uint &right)
+{
+    Uint temp = right;
+    if (this->value.size() < temp.value.size())
+    {
+        cerr << "Error: Negative difference not allowed";
+    }
+    else
+    {
+        while (temp.value.size() < this->value.size())
+        {
+            temp.value.insert(temp.value.begin(), 0);
+        }
+        vector<uint32_t> difference = {};
+        for (size_t i = this->value.size() - 1; i + 1 > 0; --i)
+        {
+            if ((int(this->value.at(i)) - int(temp.value.at(i))) > 0)
+            {
+                difference.push_back(this->value.at(i) - temp.value.at(i));
+            }
+            else
+            {
+                this->value.at(i - 1) -= 1;
+                this->value.at(i) += 10;
+                difference.push_back(this->value.at(i) - temp.value.at(i));
+            }
+        }
+        reverse(difference.begin(), difference.end());
+        this->value = difference;
+    }
+    return *this;
+}
+
 int Uint::compare(const Uint &left, const Uint &right) const
 {
-    if(left.value.size() == right.value.size()){
-        for(auto lhs = left.value.cbegin(), rhs = right.value.cbegin(); lhs != left.value.cend(); ++lhs, ++rhs){
+    if (left.value.size() == right.value.size())
+    {
+        for (auto lhs = left.value.cbegin(), rhs = right.value.cbegin(); lhs != left.value.cend(); ++lhs, ++rhs)
+        {
             if (*lhs < *rhs)
                 return -1;
             else if (*lhs > *rhs)
                 return 1;
         }
         return 0;
-    }else if (left.value.size() < right.value.size()){
+    }
+    else if (left.value.size() < right.value.size())
+    {
         return -1;
     }
     return 1;
@@ -128,22 +172,6 @@ ostream &operator<<(ostream &left, const Uint &right)
     return left;
 }
 
-Uint operator-(Uint left, const Uint &right)
-{
-    left -= right;
-    return left;
-}
-
-Uint &Uint::operator-=(const Uint &right)
-{
-    if(*this < right){
-        cerr << "Error: Negative difference not allowed";
-    }else{
-        
-    }
-    return *this;
-}
-
 int main()
 {
     string number;
@@ -152,7 +180,8 @@ int main()
     Uint n;           // Empty constructor
     n = Uint(number); // String constructor
     cout << "Number read " << n << endl;
-    Uint n1(10);
-    Uint n2(9);
-    cout << n1 - n2;
+    Uint n1(654);
+    Uint n2(63);
+    n1 -= n2;
+    cout << n1 << endl;
 }
