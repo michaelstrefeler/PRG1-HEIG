@@ -90,8 +90,6 @@ Uint Uint::division(const Uint &dividend, const Uint &divisor, Uint &remainder)
     return quotient;
 }
 
-size_t Uint::getSize() const { return value.size(); }
-
 Uint mod_pow(Uint base, Uint exp, const Uint &mod)
 {
     Uint result = 1;
@@ -114,12 +112,12 @@ Uint mod_pow(Uint base, Uint exp, const Uint &mod)
 
 Uint operator*(uint32_t left, const Uint &right) { return right * left; }
 
-std::ostream &operator<<(std::ostream &out, const Uint &u)
+std::ostream &operator<<(std::ostream &left, const Uint &right)
 {
-    for (auto i = u.value.crbegin(); i != u.value.crend(); ++i)
-        out << *i;
+    for (auto i = right.value.crbegin(); i != right.value.crend(); ++i)
+        left << *i;
 
-    return out;
+    return left;
 }
 
 std::istream &operator>>(std::istream &is, Uint &u)
