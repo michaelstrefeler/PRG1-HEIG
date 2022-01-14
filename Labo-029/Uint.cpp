@@ -1,202 +1,56 @@
-/**
- * @file Uint.cpp
- * @author Michael Strefeler
- * @brief
- * @version 0.1
- * @date 14-12-2021
- *
- * @copyright Copyright (c) 2021
- *
- */
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-#include <string>
-#include <vector>
-using namespace std;
+#include "Uint.hpp";
+#include <iostream>;
+#include <sstream>
 
-const uint32_t ZERO_ASCII = 48;
-/**
- * @brief Uint32_t class
- * Arithmetic operations on numbers with arbitrary lengths
- * Stored in a vector of uint32_t each cell is a digit
- */
-class Uint
+Uint::Uint() {}
+
+Uint::Uint(const std::string &number)
 {
-    vector<uint32_t> value = {};
-    friend Uint operator+(Uint left, const Uint &right);
-    friend Uint operator-(Uint left, const Uint &right);
-    friend ostream &operator<<(ostream &left, const Uint &right);
-    int compare(const Uint &left, const Uint &right) const;
-
-public:
-    Uint() : value(){}; // Default constructor
-    Uint(string val);   // String constructor
-    Uint(uint32_t val); // uint32_t constructor
-    Uint &operator+=(const Uint &right);
-    Uint &operator-=(const Uint &right);
-    void carry();
-    // Comparison operator overloading
-    bool operator<(const Uint &right) const;
-    bool operator<=(const Uint &right) const;
-    bool operator>(const Uint &right) const;
-    bool operator>=(const Uint &right) const;
-    bool operator==(const Uint &right) const;
-    bool operator!=(const Uint &right) const;
-};
-
-/**
- * @brief Construct a new Uint:: Uint object
- * 
- * @param val string
- */
-Uint::Uint(string val)
-{
-    for (auto i = val.begin(); i != val.end(); ++i)
+    for (auto it = number.crbegin(); it != number.crend(); ++it)
     {
-        if (isdigit(*i))
-        {
-            value.push_back(uint32_t(*i) - ZERO_ASCII);
-        }
+        if (isdigit(*it))
+            value.push_back(uint32_t(*it) - ASCII_ZERO);
+        else
+            throw std::invalid_argument("Not a number");
     }
+    fixValue();
 }
 
-/**
- * @brief Construct a new Uint:: Uint object
- * 
- * @param val uint32_t
- */
-Uint::Uint(uint32_t val)
-{
-    *this = to_string(val);
-}
+Uint::Uint(uint64_t unsigned_number) { *this = std::to_string(unsigned_number); }
 
-/**
- * @brief Used for addition to separated numbers > 9 into 2 cells
- * 
- */
-void Uint::carry()
+Uint &Uint::carry()
 {
-    for (size_t i = 0; i < value.size(); i++)
+    for (size_t size = 0; size < value.size(); ++size)
     {
-        if (value.at(i) > 0)
+        if (size == value.size() - 1)
         {
-            if (i != value.size() - 1)
+            if (value.at(size) >= 10)
             {
-                value.at(i + 1) += value.at(i) / 10;
-                value.at(i) %= 10;
-            }
-            else
-            {
-                value.push_back(value.at(1) / 10);
-                value.at(i) %= 10;
+                value.push_back(value.at(size) / 10);
             }
         }
-    }
-}
-
-/**
- * @brief + operator overload
- * 
- * @param left left hand side of addition
- * @param right right hand side of addition
- * @return Uint sum
- */
-Uint operator+(Uint left, const Uint &right)
-{
-    left += right;
-    return left;
-}
-
-/**
- * @brief += operator overload
- * 
- * @param right right hand side of addition
- * @return Uint& sum
- */
-Uint &Uint::operator+=(const Uint &right)
-{
-    for (size_t i = value.size(); i < right.value.size(); --i)
-    {
-        this->value.push_back(0);
-    }
-    for (size_t i = 0; i < value.size(); i++)
-    {
-        value.at(i) += right.value.at(i);
-        this->carry();
+        else
+        {
+            value.at(size + 1) += value.at(size) / 10;
+        }
     }
     return *this;
 }
 
-/**
- * @brief - operator overload
- * 
- * @param left left hand side of subtraction
- * @param right right hand side of subtraction
- * @return Uint difference
- */
-Uint operator-(Uint left, const Uint &right)
-{
-    left -= right;
-    return left;
-}
-
-/**
- * @brief -= operator overload
- * 
- * @param right right hand side of subtraction
- * @return Uint& difference
- */
-Uint &Uint::operator-=(const Uint &right)
-{
-    Uint temp = right;
-    if (this->value.size() < temp.value.size())
-    {
-        cerr << "Error: Negative difference not allowed";
-    }
-    else
-    {
-        while (temp.value.size() < this->value.size())
-        {
-            temp.value.insert(temp.value.begin(), 0);
-        }
-        vector<uint32_t> difference = {};
-        for (size_t i = this->value.size() - 1; i + 1 > 0; --i)
-        {
-            if ((int(this->value.at(i)) - int(temp.value.at(i))) > 0)
-            {
-                difference.push_back(this->value.at(i) - temp.value.at(i));
-            }
-            else
-            {
-                this->value.at(i - 1) -= 1;
-                this->value.at(i) += 10;
-                difference.push_back(this->value.at(i) - temp.value.at(i));
-            }
-        }
-        reverse(difference.begin(), difference.end());
-        this->value = difference;
-    }
-    return *this;
-}
-
-/**
- * @brief Compare two Uints
- * 
- * @param left Uint on the left
- * @param right Uint on the right
- * @return int -1, 0 or 1. -1 if left < right, 0 if equal and 1 otherwise
- */
 int Uint::compare(const Uint &left, const Uint &right) const
 {
     if (left.value.size() == right.value.size())
     {
-        for (auto lhs = left.value.cbegin(), rhs = right.value.cbegin(); lhs != left.value.cend(); ++lhs, ++rhs)
+        for (auto l = left.value.crbegin(), r = right.value.crbegin(); l != left.value.crend(); ++l, ++r)
         {
-            if (*lhs < *rhs)
+            if (*l < *r)
+            {
                 return -1;
-            else if (*lhs > *rhs)
+            }
+            else if (*l > *r)
+            {
                 return 1;
+            }
         }
         return 0;
     }
@@ -207,39 +61,301 @@ int Uint::compare(const Uint &left, const Uint &right) const
     return 1;
 }
 
-bool Uint::operator<(const Uint &right) const { return compare(*this, right) == -1; }
-bool Uint::operator<=(const Uint &right) const { return compare(*this, right) != 1; }
-bool Uint::operator>(const Uint &right) const { return compare(*this, right) == 1; }
-bool Uint::operator>=(const Uint &right) const { return compare(*this, right) != -1; }
-bool Uint::operator==(const Uint &right) const { return compare(*this, right) == 0; }
-bool Uint::operator!=(const Uint &right) const { return compare(*this, right) != 0; }
-
-/**
- * @brief << operator overload to show the value on the screen
- * 
- * @param left ostream
- * @param right Uint to show
- * @return ostream& output
- */
-ostream &operator<<(ostream &left, const Uint &right)
+void Uint::fixValue()
 {
-    for (auto i = right.value.begin(); i != right.value.end(); ++i)
+    while (value.size() > 1 and *(value.end() - 1) == 0)
     {
-        left << *i;
+        value.erase((value.end() - 1));
+    }
+}
+
+Uint Uint::division(const Uint &dividend, const Uint &divisor, Uint &remainder)
+{
+    Uint temp(1);
+    Uint temp_divisor = divisor;
+    Uint quotient(0);
+
+    while (temp_divisor <= divisor)
+    {
+        temp *= 2;
+        temp_divisor *= 2;
+    }
+
+    remainder = dividend;
+
+    while (remainder >= divisor)
+    {
+        quotient += temp;
+        remainder -= temp_divisor;
+    }
+    return quotient;
+}
+
+std::ostream &operator<<(std::ostream &left, const Uint &right)
+{
+    for (auto r = right.value.crbegin(); r != right.value.crend(); ++r)
+    {
+        left << *r;
     }
     return left;
 }
 
-int main()
+std::istream &operator>>(std::istream &is, Uint &u)
 {
-    string number;
-    cout << "Give me an unsigned number: ";
-    getline(cin, number);
-    Uint n;           // Empty constructor
-    n = Uint(number); // String constructor
-    cout << "Number read " << n << endl;
-    Uint n1(654);
-    Uint n2(63);
-    n1 -= n2;
-    cout << n1 << endl;
+    std::string buffer;
+    if (is >> buffer)
+        u = buffer;
+    else
+        is.clear(std::ios::badbit | is.rdstate());
+
+    return is;
+}
+
+Uint operator*(uint32_t left, const Uint &right) { return left * right; }
+
+Uint Uint::operator+(const Uint &right) const
+{
+    Uint temp = *this;
+    temp += right;
+    return temp;
+}
+
+Uint Uint::operator-(const Uint &right) const
+{
+    Uint temp = *this;
+    temp -= right;
+    return temp;
+}
+
+Uint Uint::operator*(const Uint &right) const
+{
+    Uint temp = *this;
+    temp *= right;
+    return temp;
+}
+
+Uint Uint::operator*(uint32_t &right) const
+{
+    Uint temp = *this;
+    temp *= right;
+    return temp;
+}
+
+Uint Uint::operator/(const Uint &right) const
+{
+    Uint temp = *this;
+    temp /= right;
+    return temp;
+}
+
+Uint Uint::operator/(uint32_t &right) const
+{
+    Uint temp = *this;
+    temp /= right;
+    return temp;
+}
+
+Uint Uint::operator%(const Uint &right) const
+{
+    Uint temp = *this;
+    temp %= right;
+    return temp;
+}
+
+Uint Uint::operator%(uint32_t &right) const
+{
+    Uint temp = *this;
+    temp %= right;
+    return temp;
+}
+
+Uint &Uint::operator++(int dummy)
+{
+    Uint temp = *this;
+    ++(*this);
+    return temp;
+}
+
+Uint &Uint::operator++()
+{
+    ++value.front();
+    if (value.front() > 9)
+    {
+        carry();
+    }
+    return *this;
+}
+
+Uint &Uint::operator--(int dummy)
+{
+    Uint temp = *this;
+    --(*this);
+    return temp;
+}
+
+Uint &Uint::operator--()
+{
+    if (value.front() > 1)
+    {
+        --value.front();
+    }
+    else
+    {
+        *this -= 1;
+        return carry();
+    }
+    return *this;
+}
+
+Uint &Uint::operator+=(const Uint &right)
+{
+    if (value.size() < right.value.size())
+    {
+        value.resize(uint32_t(right.value.size()), 0);
+    }
+
+    for (size_t i = 0; i < right.value.size(); ++i)
+    {
+        value.at(i) += right.value.at(i);
+    }
+
+    return carry();
+}
+
+Uint &Uint::operator-=(const Uint &right)
+{
+    Uint temp = right;
+    if (*this < right)
+    {
+        throw std::invalid_argument("Negative difference not allowed!");
+    }
+
+    if (value.size() > right.value.size())
+    {
+        temp.value.resize(uint32_t(value.size()), 0);
+    }
+
+    for (size_t i = 0; i < value.size(); ++i)
+    {
+        if (value.at(i) < temp.value.at(i))
+        {
+            temp.value.at(i + 1)++;
+            value.at(i) += 10;
+        }
+        value.at(i) -= temp.value.at(i);
+    }
+    fixValue();
+    return *this;
+}
+
+Uint &Uint::operator*=(const Uint &right)
+{
+    Uint temp = 0;
+
+    for (size_t i = 0; i != right.value.size(); i++)
+    {
+        temp += right.value.at(i) * (*this);
+
+        if (i != right.value.size() - 1)
+        {
+            value.insert(value.cbegin(), 0);
+        }
+    }
+
+    *this = temp.carry();
+    return *this;
+}
+
+Uint &Uint::operator*=(uint32_t &right)
+{
+    for (uint32_t i = 0; i < value.size(); ++i)
+    {
+        value.at(i) *= right;
+    }
+
+    return carry();
+}
+
+Uint &Uint::operator/=(const Uint &right)
+{
+    if (right == Uint(0))
+    {
+        throw std::runtime_error("Zero division error");
+    }
+
+    Uint remainder;
+    *this = division(*this, right, remainder);
+    return *this;
+}
+
+Uint &Uint::operator/=(uint32_t &right)
+{
+    if (right == 0)
+    {
+        throw std::runtime_error("Zero division error");
+    }
+
+    for (size_t i = value.size() - 1; i > 0; i--)
+    {
+        value.at(i - 1) += (value.at(i) % right) * 10;
+        value.at(i) /= right;
+    }
+
+    value.at(0) /= right;
+    fixValue();
+
+    return *this;
+}
+
+Uint &Uint::operator%=(const Uint &right)
+{
+    division(*this, right, *this);
+    return *this;
+}
+
+Uint &Uint::operator%=(uint32_t &right)
+{
+    return *this -= (*this / right) * right;
+}
+
+bool Uint::operator<(const Uint &right) const { return compare(*this, right) == -1; };
+bool Uint::operator<=(const Uint &right) const { return compare(*this, right) != 1; };
+bool Uint::operator>(const Uint &right) const { return compare(*this, right) == 1; };
+bool Uint::operator>=(const Uint &right) const { return compare(*this, right) != -1; };
+bool Uint::operator==(const Uint &right) const { return compare(*this, right) == 0; };
+bool Uint::operator!=(const Uint &right) const { return compare(*this, right) != 0; };
+bool Uint::isEven() const { return (value.front() % 2) == 0; }
+
+Uint::operator uint64_t() const
+{
+    try
+    {
+        std::stringstream convert;
+        convert << *this;
+        return std::stoull(convert.str());
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << ": Number greater than uint64_t max value" << '\n';
+        return 0;
+    }
+}
+
+Uint mod_pow(Uint base, Uint exp, const Uint &mod)
+{
+    Uint result = 1;
+    while (exp > 0)
+    {
+        if (exp.isEven())
+        {
+            base = (base * base) % mod;
+            exp /= 2;
+        }
+        else
+        {
+            result = (result * base) % mod;
+            exp -= 1;
+        }
+    }
+    return result;
 }
