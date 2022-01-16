@@ -30,6 +30,12 @@ Sint::Sint(int64_t number)
     }
 }
 
+Sint::Sint(Uint number)
+{
+    negative = false;
+    value = number;
+}
+
 Sint &Sint::operator-()
 {
     negative = not(negative);
@@ -57,7 +63,8 @@ std::istream &operator>>(std::istream &is, Sint &s)
         {
             s.negative = true;
             buffer = buffer.substr(1);
-        }else
+        }
+        else
             s.negative = false;
         s.value = buffer;
     }
@@ -132,12 +139,12 @@ Sint Sint::operator++(int)
 
 Sint &Sint::operator++()
 {
-    if(not(negative) || value == 0)
+    if (not(negative) || value == 0)
         ++value;
     else
         --value;
 
-    if(value == 0)
+    if (value == 0)
         negative = false;
     return *this;
 }
@@ -151,10 +158,13 @@ Sint Sint::operator--(int)
 
 Sint &Sint::operator--()
 {
-    if(value == 0 || negative){
+    if (value == 0 || negative)
+    {
         ++value;
         negative = true;
-    }else{
+    }
+    else
+    {
         --value;
     }
     return *this;
@@ -162,15 +172,20 @@ Sint &Sint::operator--()
 
 Sint &Sint::operator+=(const Sint &right)
 {
-    if(negative == false && (negative == right.negative)){
+    if (negative == false && (negative == right.negative))
+    {
         value += right.value;
-    }else if(value > right.value){
+    }
+    else if (value > right.value)
+    {
         value -= right.value;
-    }else{
+    }
+    else
+    {
         value = right.value - value;
         negative = not(negative);
     }
-    if(value == 0)
+    if (value == 0)
         negative = false;
     return *this;
 }
@@ -236,7 +251,76 @@ bool Sint::operator!=(const Sint &right) const { return compare(*this, right) !=
 Sint::operator int64_t() const
 {
     uint64_t temp = uint64_t(value);
-    if(negative)
+    if (negative)
         temp = -temp;
     return int64_t(temp);
+}
+
+Sint Sint::division(const Sint &dividend, const Sint &divisor, Sint &remainder)
+{
+    Sint temp(1), divisorTemp = divisor, quotient(0);
+
+    while (divisorTemp <= dividend)
+    {
+        temp *= 2;
+        divisorTemp *= 2;
+    }
+
+    remainder = dividend;
+
+    while (remainder >= divisor)
+    {
+        divisorTemp /= 2;
+        temp /= 2;
+
+        if (remainder >= divisorTemp)
+        {
+            quotient += temp;
+            remainder -= divisorTemp;
+        }
+    }
+    return quotient;
+}
+
+Sint mod_pow(Sint base, Sint exp, const Sint &mod)
+{
+    Sint result = 1;
+
+    while (exp > 0)
+    {
+        if (exp.isEven())
+        {
+            base = base * base % mod;
+            exp /= 2;
+        }
+        else
+        {
+            result = result * base % mod;
+            --exp;
+        }
+    }
+    return result;
+}
+
+Sint euclidAlgo(Sint a, Sint b, Sint &inverse)
+{
+    Sint gcd = a;
+    Sint gcd_prime = b;
+    inverse = 0;
+    Sint inverse_prime = 1;
+    while (gcd_prime != 0)
+    {
+        Sint integer_part = gcd / gcd_prime;
+        Sint temp_gcd = gcd;
+        Sint temp_inverse = inverse;
+        gcd = gcd_prime;
+        inverse = inverse_prime;
+        gcd_prime = temp_gcd - integer_part * gcd_prime;
+        inverse_prime = temp_inverse - integer_part * inverse_prime;
+    }
+    if (inverse < 0)
+    {
+        inverse = inverse + a;
+    }
+    return gcd;
 }

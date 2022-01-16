@@ -7,13 +7,16 @@ private:
     Uint value;
     bool negative;
     int compare(const Sint &left, const Sint &right) const;
+    Sint division(const Sint &dividend, const Sint &divisor, Sint &remainder);
 
 public:
     Sint();
     Sint(const std::string &s);
     Sint(int64_t number);
+    Sint(Uint number);
     bool isEven() const;
 
+    friend Sint euclidAlgo(Sint a, Sint b, Sint &inverse);
     friend Sint mod_pow(Sint base, Sint exp, const Sint &mod);
     friend Sint operator*(int32_t left, const Sint &right);
     friend std::ostream &operator<<(std::ostream &out, const Sint &u);

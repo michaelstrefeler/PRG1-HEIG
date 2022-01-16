@@ -1,6 +1,8 @@
 #include "Uint.hpp"
 #include <iostream>
 #include <sstream>
+#include <functional>
+#include <random>
 
 Uint::Uint() {}
 
@@ -18,6 +20,7 @@ Uint::Uint(const std::string &s)
 }
 
 bool Uint::isEven() const { return (value.front() % 2) == 0; }
+uint32_t Uint::getSize() const { return uint32_t(value.size()); }
 
 Uint::Uint(uint64_t c) { *this = std::to_string(c); }
 

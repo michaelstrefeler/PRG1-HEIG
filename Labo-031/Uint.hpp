@@ -20,6 +20,7 @@ public:
     Uint(const std::string &s);
     Uint(uint64_t u);
     bool isEven() const;
+    uint32_t getSize() const;
 
     friend Uint mod_pow(Uint base, Uint exp, const Uint &mod);
     friend class Sint;
