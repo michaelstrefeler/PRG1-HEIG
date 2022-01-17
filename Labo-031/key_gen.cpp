@@ -9,25 +9,28 @@ using namespace std;
 
 Uint randUint(size_t digits)
 {
-    auto gen_int = std::bind(std::uniform_int_distribution<int32_t>(0, 9),
-                             std::mt19937(unsigned(time(NULL))));
-    std::string rand;
-    do
-    {
-        rand = std::to_string(gen_int());
-    } while (rand == "0");
+    static random_device device;
+    mt19937 generator(device());
+    uniform_int_distribution<int> number(0, 9);
 
+    string temp = to_string(number(generator));
+    while (temp == "0")
+    {
+        temp = to_string(number(generator));
+    }
     for (size_t i = 0; i < digits - 1; ++i)
     {
-        rand += std::to_string(gen_int());
+        temp += to_string(number(generator));
     }
-    return Uint(rand);
+    return Uint(temp);
 }
 
-bool isPrime(Uint &prime, size_t size)
+bool isPrime(Uint &prime)
 {
-    if (size == 0)
+    if (prime.getSize() == 0)
+    {
         return false;
+    }
 
     if (prime < 2)
     {
@@ -41,7 +44,7 @@ bool isPrime(Uint &prime, size_t size)
     {
         for (int i = 0; i < 10; ++i)
         {
-            Uint random = (randUint(size % uint64_t(prime))) + 1;
+            Uint random = (randUint(prime.getSize() % uint64_t(prime))) + 1;
             Uint exp = prime - 1;
 
             if (mod_pow(random, exp, prime) != 1)
@@ -71,8 +74,8 @@ int main()
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
 
-    Uint p = randUint(digits);
-    Uint q = randUint(digits);
+    Uint p = 0;
+    Uint q = 0;
     size_t size;
 
     if (digits == 1)
@@ -84,34 +87,35 @@ int main()
         size = digits - 1;
     }
 
-    while (isPrime(p, size) == false)
+    do
     {
         p = randUint(digits);
-    }
+    } while (isPrime(p) == false);
 
-    while (isPrime(q, size) == false)
+    do
     {
         q = randUint(digits);
-    }
+    } while (isPrime(q) == false);
 
-    while(p == q){
-        q -= 1;
-        while (isPrime(q, size) == false)
+    if (p == q)
+    {
+        do
         {
             q = randUint(digits);
-        }
+        } while (isPrime(q) == false);
     }
-    cout << p << " and " << q << endl;
     Uint phi = (p - 1) * (q - 1);
     Uint n = p * q;
-    cout << "Phi: " << phi << " n: " << n << endl;
-    Uint e = randUint(phi.getSize());
+    Uint e = randUint(phi.getSize() - 1);
     Sint inverse;
-    while (e > phi or euclidAlgo(Sint(phi), Sint(e), inverse) != 1)
+
+    while (isPrime(e) == false)
     {
-        Uint e = randUint(phi.getSize());
+        e = randUint(phi.getSize() - 1);
     }
 
+    euclidAlgo(Sint(phi), Sint(e), inverse);
+    cout << (euclidAlgo(Sint(phi), Sint(e), inverse) != 1);
     cout << "Public key (" << n << ", " << e << ")" << endl;
     cout << "Private key: " << inverse << endl;
 }

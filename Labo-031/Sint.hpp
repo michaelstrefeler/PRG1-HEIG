@@ -15,6 +15,7 @@ public:
     Sint(int64_t number);
     Sint(Uint number);
     bool isEven() const;
+    uint32_t getSize() const;
 
     friend Sint euclidAlgo(Sint a, Sint b, Sint &inverse);
     friend Sint mod_pow(Sint base, Sint exp, const Sint &mod);
