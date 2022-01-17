@@ -325,29 +325,6 @@ Sint mod_pow(Sint base, Sint exp, const Sint &mod)
     return result;
 }
 
-/*Sint euclidAlgo(Sint a, Sint b, Sint &inverse)
-{
-    Sint gcd = a;
-    Sint gcd_prime = b;
-    inverse = 0;
-    Sint inverse_prime = 1;
-    while (gcd_prime != 0 and gcd_prime != -0)
-    {
-        Sint integer_part = gcd / gcd_prime;
-        Sint temp_gcd = gcd;
-        Sint temp_inverse = inverse;
-        gcd = gcd_prime;
-        inverse = inverse_prime;
-        gcd_prime = temp_gcd - integer_part * gcd_prime;
-        inverse_prime = temp_inverse - integer_part * inverse_prime;
-    }
-    if (inverse < 0)
-    {
-        inverse = inverse + a;
-    }
-    return gcd;
-}*/
-
 Sint euclidAlgo(Sint a, Sint b, Sint &inverse)
 {
     Sint gcd = a;

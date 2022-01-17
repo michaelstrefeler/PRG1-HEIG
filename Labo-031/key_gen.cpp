@@ -7,6 +7,13 @@
 
 using namespace std;
 
+/**
+ * @brief generate a random Uint
+ * Using a random_device a mersenne twister and a uniform int distribution
+ * 
+ * @param digits amount of digits the random number will have
+ * @return Uint the randomly Uint
+ */
 Uint randUint(size_t digits)
 {
     static random_device device;
@@ -25,13 +32,22 @@ Uint randUint(size_t digits)
     return Uint(temp);
 }
 
+/**
+ * @brief Check if a Uint is prime with high probablity
+ * 
+ * @param prime the potentially prime number
+ * @return true 
+ * @return false 
+ */
 bool isPrime(Uint &prime)
 {
+    // an empty Uint won't be prime
     if (prime.getSize() == 0)
     {
         return false;
     }
 
+    // 2 is the smallest prime number so any number less than 2 won't be prime
     if (prime < 2)
     {
         return false;
@@ -42,8 +58,10 @@ bool isPrime(Uint &prime)
     }
     else
     {
+        // Loop to find out if the number is prime with high probability
         for (int i = 0; i < 10; ++i)
         {
+            // Random number generated at each instance of the loop
             Uint random = (randUint(prime.getSize() % uint64_t(prime))) + 1;
             Uint exp = prime - 1;
 
@@ -74,48 +92,43 @@ int main()
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
 
+    // prime numbers that will be randomly generated
     Uint p = 0;
     Uint q = 0;
-    size_t size;
 
-    if (digits == 1)
-    {
-        size = 1;
-    }
-    else
-    {
-        size = digits - 1;
-    }
-
+    // generate a random number until it's prime
     do
     {
         p = randUint(digits);
     } while (isPrime(p) == false);
-
     do
     {
         q = randUint(digits);
     } while (isPrime(q) == false);
 
+    // both prime numbers can't be the same or the algorithm doesn't work
     if (p == q)
     {
+        // make q a different prime number
         do
         {
             q = randUint(digits);
         } while (isPrime(q) == false);
     }
+
     Uint phi = (p - 1) * (q - 1);
     Uint n = p * q;
     Uint e = randUint(phi.getSize() - 1);
     Sint inverse;
 
+    // make e a prime number < phi
     while (isPrime(e) == false)
     {
         e = randUint(phi.getSize() - 1);
     }
 
     euclidAlgo(Sint(phi), Sint(e), inverse);
-    cout << (euclidAlgo(Sint(phi), Sint(e), inverse) != 1);
+    // Public and private keys
     cout << "Public key (" << n << ", " << e << ")" << endl;
     cout << "Private key: " << inverse << endl;
 }
