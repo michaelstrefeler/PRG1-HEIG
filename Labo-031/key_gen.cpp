@@ -14,7 +14,7 @@ using namespace std;
  * @param digits amount of digits the random number will have
  * @return Uint the randomly Uint
  */
-Uint randUint(size_t digits)
+Uint randUint(Uint digits)
 {
     static random_device device;
     mt19937 generator(device());
@@ -25,7 +25,7 @@ Uint randUint(size_t digits)
     {
         temp = to_string(number(generator));
     }
-    for (size_t i = 0; i < digits - 1; ++i)
+    for (Uint i = 0; i < digits - 1; ++i)
     {
         temp += to_string(number(generator));
     }
@@ -62,7 +62,7 @@ bool isPrime(Uint &prime)
         for (int i = 0; i < 10; ++i)
         {
             // Random number generated at each instance of the loop
-            Uint random = (randUint(prime.getSize() % uint64_t(prime))) + 1;
+            Uint random = (randUint(Uint(prime.getSize()) % prime)) + 1;
             Uint exp = prime - 1;
 
             if (mod_pow(random, exp, prime) != 1)

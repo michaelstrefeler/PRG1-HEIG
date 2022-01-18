@@ -29,7 +29,7 @@ private:
      * @param right right hand side of comparison
      * @return int -1 if left < right, 0 if equal else 1
      */
-    int compare(const Uint &left, const Uint &right) const;
+    int comp(const Uint &left, const Uint &right) const;
 
     /**
      * @brief Remove unwanted zeros that appear after some arithmetics
@@ -92,6 +92,7 @@ public:
      * @return Uint base^exposant modulo mod
      */
     friend Uint mod_pow(Uint base, Uint exp, const Uint &mod);
+    friend int compUint(const Uint &left, const Uint &right);
     friend class Sint;
 
     /**

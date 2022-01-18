@@ -42,8 +42,26 @@ Uint &Uint::carry()
     return *this;
 }
 
-int Uint::compare(const Uint &left, const Uint &right) const
+int Uint::comp(const Uint &left, const Uint &right) const
 {
+    if (left.value.size() == right.value.size())
+    {
+        for (auto l = left.value.crbegin(), r = right.value.crbegin();
+             l != left.value.crend(); ++l, ++r)
+        {
+            if (*l < *r)
+                return -1;
+            else if (*l > *r)
+                return 1;
+        }
+        return 0;
+    }
+    else if (left.value.size() < right.value.size())
+        return -1;
+    return 1;
+}
+
+int compUint(const Uint &left, const Uint &right){
     if (left.value.size() == right.value.size())
     {
         for (auto l = left.value.crbegin(), r = right.value.crbegin();
@@ -317,17 +335,17 @@ Uint &Uint::operator%=(uint32_t right)
     return *this -= (*this / right) * right;
 }
 
-bool Uint::operator<(const Uint &right) const { return compare(*this, right) == -1; }
+bool Uint::operator<(const Uint &right) const { return comp(*this, right) == -1; }
 
-bool Uint::operator<=(const Uint &right) const { return compare(*this, right) != 1; }
+bool Uint::operator<=(const Uint &right) const { return comp(*this, right) != 1; }
 
-bool Uint::operator>(const Uint &right) const { return compare(*this, right) == 1; }
+bool Uint::operator>(const Uint &right) const { return comp(*this, right) == 1; }
 
-bool Uint::operator>=(const Uint &right) const { return compare(*this, right) != -1; }
+bool Uint::operator>=(const Uint &right) const { return comp(*this, right) != -1; }
 
-bool Uint::operator==(const Uint &right) const { return compare(*this, right) == 0; }
+bool Uint::operator==(const Uint &right) const { return comp(*this, right) == 0; }
 
-bool Uint::operator!=(const Uint &right) const { return compare(*this, right) != 0; }
+bool Uint::operator!=(const Uint &right) const { return comp(*this, right) != 0; }
 
 Uint::operator uint64_t() const
 {

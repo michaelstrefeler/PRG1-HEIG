@@ -40,24 +40,22 @@ Sint::Sint(Uint number)
 
 int Sint::compare(const Sint &left, const Sint &right) const
 {
-    if (left.negative == true and right.negative == false)
+    if (left.negative == right.negative)
     {
+        if (left.negative == 1)
+        {
+            return -compUint(left.value, right.value);
+        }
+        else
+        {
+            return compUint(left.value, right.value);
+        }
+    }
+    else if (left.negative == 1 && right.negative == 0)
         return -1;
-    }
-    else if (right.negative == true and left.negative == false)
-    {
+    else
         return 1;
-    }
-    else if (left.getSize() == right.getSize())
-    {
-        if (left.value < right.value)
-            return -1;
-        else if (left.value > right.value)
-            return 1;
-    }
-    return 1;
 }
-
 
 Sint &Sint::operator-()
 {
@@ -195,7 +193,7 @@ Sint &Sint::operator--()
 
 Sint &Sint::operator+=(const Sint &right)
 {
-    if (negative == false && (negative == right.negative))
+    if (negative == right.negative)
     {
         value += right.value;
     }
@@ -331,7 +329,8 @@ Sint euclidAlgo(Sint a, Sint b, Sint &inverse)
     Sint gcd_prime = b;
     inverse = 0;
     Sint inverse_prime = 1;
-    while (abs(int64_t(gcd_prime)) != 0)
+    Sint zero = 0;
+    while (gcd_prime != zero)
     {
         Sint integer_part = gcd / gcd_prime;
         Sint temp_gcd = gcd;
@@ -343,7 +342,7 @@ Sint euclidAlgo(Sint a, Sint b, Sint &inverse)
     }
     if (inverse < 0)
     {
-        inverse = inverse + a;
+        inverse += a;
     }
     return gcd;
 }
