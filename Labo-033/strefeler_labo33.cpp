@@ -108,7 +108,7 @@ int main(void)
         cout << "ligne et colonne du pivot\n";
         size_t i, j;
         cin >> i >> j;
-        if (i < nbreLignes and j < nbreColonnes and t.at(i).at(j) != 0.0)
+        if ((i < nbreLignes) && (j < nbreColonnes) && (t.at(i).at(j) != 0.0))
             pivote(t, i, j, nbreLignes, nbreColonnes);
         else
             cout << "pivot non valide!\n";
