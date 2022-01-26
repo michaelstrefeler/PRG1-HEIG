@@ -22,8 +22,8 @@ public:
     Rationnel(const std::string &s);
     Rationnel(const int &number);
     friend Rationnel operator*(double left, const Rationnel &right);
-    friend std::ostream &operator<<(std::ostream &out, const Rationnel &s);
-    friend std::istream &operator>>(std::istream &is, Rationnel &s);
+    friend std::ostream &operator<<(std::ostream &out, const Rationnel &r);
+    friend std::istream &operator>>(std::istream &is, Rationnel &r);
 
     // Artithmetic operator overloads
     Rationnel operator+(const Rationnel &right) const;

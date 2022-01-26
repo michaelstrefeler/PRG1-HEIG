@@ -94,26 +94,4 @@ int main(void)
         else
             cout << "pivot non valide!\n";
     }
-    /*
-    Rationnel test("-312/32");
-    Rationnel test2("17/3");
-    Rationnel test3("-4");
-    double test4 = 1.25;
-
-    cout << test + test2 << endl;
-    cout << test2 + test << endl;
-    cout << test - test2 << endl;
-    cout << test2 - test << endl;
-    cout << test * test3 << endl;
-    cout << test * test2 << endl;
-    cout << test3 * test4 << endl;
-
-    Rationnel div1("-3/4");
-    Rationnel div2("-7/5");
-    cout << div1 / div2 << endl;
-
-    Rationnel test5("1/2");
-    Rationnel test6("1/2");
-    cout << test5++ << endl;
-    cout << ++test6 << endl;*/
 }

@@ -60,26 +60,31 @@ void Rationnel::simplify()
     }
 }
 
-std::ostream &operator<<(std::ostream &out, const Rationnel &s)
+std::ostream &operator<<(std::ostream &out, const Rationnel &r)
 {
-    if (s.negative)
+    if (r.negative)
     {
         out << "-";
     }
 
-    if (s.denominator != 1)
+    if (r.denominator != 1)
     {
-        out << s.numerator << "/" << s.denominator;
+        out << r.numerator << "/" << r.denominator;
     }
     else
     {
-        out << s.numerator;
+        out << r.numerator;
     }
     return out;
 }
 
-std::istream &operator>>(std::istream &is, Rationnel &s){
-    
+std::istream &operator>>(std::istream &is, Rationnel &r){
+    std::string buffer;
+    if (is >> buffer)
+        r = buffer;
+    else
+        is.clear(std::ios::badbit | is.rdstate());
+    return is;
 }
 
 Rationnel operator*(double left, const Rationnel &right)
