@@ -23,7 +23,6 @@ void imprime_matrice(const vector<vector<T>> t)
     cout << endl;
 }
 
-/*Opération de pivotage */
 template <typename T>
 void pivote(vector<vector<T>> &t,
             size_t ligne, size_t colonne, int nbreLignes, int nbreColonnes)
@@ -70,7 +69,6 @@ int main(void)
 
     TailleMatrice(nbreColonnes, nbreLignes, entree);
 
-    // vector<vector<long double>> t(nbreLignes, vector<long double>(nbreColonnes));
     vector<vector<Rationnel>> t(nbreLignes, vector<Rationnel>(nbreColonnes));
 
     for (size_t i = 0; i < nbreLignes; i++)
@@ -92,14 +90,4 @@ int main(void)
         else
             cout << "pivot non valide!\n";
     }
-
-    //-17296897026448322897687/60214--42507/30107*31111699833335825140475/1771/362739/4301
-    /*Rationnel a("-17296897026448322897687/60214");
-    Rationnel b("-42507/30107");
-    Rationnel c("31111699833335825140475/1771");
-    Rationnel d("362739/4301");
-    Rationnel sub = a - b;
-    Rationnel mult = sub * c;
-    Rationnel final = mult / d;
-    cout << final << endl;*/
 }
