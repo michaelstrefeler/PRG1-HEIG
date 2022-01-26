@@ -6,7 +6,7 @@
 
 using namespace std;
 
-template<typename T>
+template <typename T>
 void imprime_ligne(const vector<T> ligne)
 {
     for (size_t j = 0; j < ligne.size(); j++)
@@ -41,8 +41,7 @@ void pivote(vector<vector<T>> &t,
     for (size_t j = 0; j < nbreColonnes; j++)
         if (j != colonne)
             t.at(ligne).at(j) = t.at(ligne).at(j) / t.at(ligne).at(colonne);
-
-    t.at(ligne).at(colonne) = T(1) / t.at(ligne).at(colonne);
+    t.at(ligne).at(colonne) = T(1.0) / t.at(ligne).at(colonne);
 }
 
 void TailleMatrice(int &nbreColonnes, int &nbreLignes, int valeur)
@@ -71,10 +70,9 @@ int main(void)
 
     TailleMatrice(nbreColonnes, nbreLignes, entree);
 
-    //vector<vector<long double>> t(nbreLignes, vector<long double>(nbreColonnes));
-
+    // vector<vector<long double>> t(nbreLignes, vector<long double>(nbreColonnes));
     vector<vector<Rationnel>> t(nbreLignes, vector<Rationnel>(nbreColonnes));
-    
+
     for (size_t i = 0; i < nbreLignes; i++)
         for (size_t j = 0; j < nbreColonnes; j++)
         {
@@ -94,4 +92,14 @@ int main(void)
         else
             cout << "pivot non valide!\n";
     }
+
+    //-17296897026448322897687/60214--42507/30107*31111699833335825140475/1771/362739/4301
+    /*Rationnel a("-17296897026448322897687/60214");
+    Rationnel b("-42507/30107");
+    Rationnel c("31111699833335825140475/1771");
+    Rationnel d("362739/4301");
+    Rationnel sub = a - b;
+    Rationnel mult = sub * c;
+    Rationnel final = mult / d;
+    cout << final << endl;*/
 }

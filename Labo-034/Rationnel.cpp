@@ -1,46 +1,53 @@
 #include "Rationnel.hpp"
+#include <algorithm>
 #include <iostream>
 
 Rationnel::Rationnel() {}
 Rationnel::Rationnel(const std::string &s)
 {
     std::string temp = s;
-    if (s.front() == '-')
-    {
-        negative = true;
-        temp = temp.substr(1);
-    }
-    else
-        negative = false;
+    std::string separator = "/";
+    size_t pos = s.find_first_of(separator);
+    std::string top = s.substr(0, pos);
+    std::string bottom = s.substr(pos + 1);
+    // Reverse string so push_back puts the digits in the correct order
+    reverse(top.begin(), top.end());
+    reverse(bottom.begin(), bottom.end());
 
-    bool found_separator = false;
-    for (auto i = temp.crbegin(); i != temp.crend(); ++i)
+    negative = false;
+    if (top.length() == 0)
     {
-        if (found_separator == true)
+        throw std::invalid_argument("Not a valid number");
+    }
+    for (size_t i = 0; i < top.length(); ++i)
+    {
+        if (isdigit(top.at(i)))
         {
-            numerator.value.push_back(*i - 48U);
+            numerator.value.push_back(top.at(i) - 48U); // ASCII value - ASCII of zero
         }
-        else
-        {
-            if (*i == '/' || *i == ',' || *i == '.')
-            {
-                found_separator = true;
-            }
-            else
-            {
-                denominator.value.push_back(*i - 48U);
-            }
+        if(top.at(i) == '-'){
+            negative = !negative;
         }
     }
-    if (numerator.getSize() == 0)
+    if (bottom.length() == 0 || bottom == top)
     {
-        numerator = denominator;
         denominator = 1;
     }
     else
     {
-        simplify();
+        for (size_t i = 0; i < bottom.length(); ++i)
+        {
+            if (isdigit(bottom.at(i)))
+            {
+                denominator.value.push_back(bottom.at(i) - 48U); // ASCII value - ASCII of zero
+            }
+            if (bottom.at(i) == '-')
+            {
+                negative = !negative;
+            }
+        }
     }
+    simplify();
 }
 
 Rationnel::Rationnel(const int &number)
@@ -78,12 +85,16 @@ std::ostream &operator<<(std::ostream &out, const Rationnel &r)
     return out;
 }
 
-std::istream &operator>>(std::istream &is, Rationnel &r){
+std::istream &operator>>(std::istream &is, Rationnel &r)
+{
     std::string buffer;
-    if (is >> buffer)
-        r = buffer;
-    else
+    if (is >> buffer){
+        Rationnel temp(buffer);
+        r = temp;
+    }
+    else{
         is.clear(std::ios::badbit | is.rdstate());
+    }
     return is;
 }
 
@@ -145,7 +156,7 @@ Rationnel Rationnel::operator++(int)
 
 Rationnel &Rationnel::operator++()
 {
-    *this += Rationnel(1);
+    *this += 1;
     return *this;
 }
 
@@ -170,22 +181,46 @@ Rationnel &Rationnel::operator+=(const Rationnel &right)
     numerator *= temp.denominator;
     if (negative == true && right.negative == false)
     {
-        numerator = numerator - temp.numerator;
-        negative = true;
+        if (numerator > temp.numerator)
+        {
+            numerator = numerator - temp.numerator;
+            negative = true;
+        }
+        else if (numerator < temp.numerator)
+        {
+            numerator = numerator - temp.numerator;
+            negative = false;
+        }
+        else
+        {
+            numerator = 0;
+            negative = false;
+        }
     }
     else if (negative == false && right.negative == true)
     {
-        numerator = temp.numerator - numerator;
-        negative = true;
+        if(numerator > temp.numerator){
+            numerator = numerator - temp.numerator;
+            negative = false;
+        }
+        else if (numerator < temp.numerator)
+        {
+            numerator = temp.numerator - numerator;
+            negative = true;
+        }else{
+            numerator = 0;
+            negative = false;
+        }
+        
     }
     else if (negative == true && right.negative == negative)
     {
-        numerator += temp.numerator;
-        negative = false;
+        numerator = numerator + temp.numerator;
+        negative = true;
     }
     else
     {
-        numerator += temp.numerator;
+        numerator = numerator + temp.numerator;
         negative = false;
     }
     simplify();
@@ -200,8 +235,21 @@ Rationnel &Rationnel::operator-=(const Rationnel &right)
     numerator *= temp.denominator;
     if (negative == true && right.negative == false)
     {
-        numerator += temp.numerator;
-        negative = true;
+        if (numerator > temp.numerator)
+        {
+            numerator = numerator - temp.numerator;
+            negative = true;
+        }
+        else if (numerator < temp.numerator)
+        {
+            numerator = numerator + temp.numerator;
+            negative = true;
+        }
+        else
+        {
+            numerator = numerator + temp.numerator;
+            negative = true;
+        }
     }
     else if (negative == false && right.negative == true)
     {
@@ -210,13 +258,36 @@ Rationnel &Rationnel::operator-=(const Rationnel &right)
     }
     else if (negative == true && right.negative == negative)
     {
-        numerator += temp.numerator;
-        negative = true;
+        if (numerator > temp.numerator)
+        {
+            numerator = numerator - temp.numerator;
+            negative = true;
+        }
+        else if (numerator < temp.numerator)
+        {
+            numerator = numerator - temp.numerator;
+            negative = false;
+        }
+        else
+        {
+            numerator = 0;
+            negative = false;
+        }
     }
     else
     {
-        numerator = temp.numerator - numerator;
-        negative = true;
+        if(numerator > temp.numerator){
+            numerator -= temp.numerator;
+            negative = false;
+        }
+        else if (numerator < temp.numerator)
+        {
+            numerator = temp.numerator - numerator;
+            negative = true;
+        }else{
+            numerator -= temp.numerator;
+            negative = false;
+        }
     }
     simplify();
     return *this;
@@ -236,6 +307,7 @@ Rationnel &Rationnel::operator*=(double right)
     Rationnel temp = *this;
     Rationnel new_right = int(right);
     temp *= new_right;
+    simplify();
     return temp;
 }
 
@@ -253,7 +325,6 @@ Rationnel &Rationnel::operator/=(double right)
     Rationnel temp = *this;
     Rationnel new_right = int(right);
     temp /= new_right;
-    simplify();
     return temp;
 }
 
@@ -289,7 +360,7 @@ int Rationnel::compRat(const Rationnel &left, const Rationnel &right) const
     {
         return 1;
     }
-    else if (left.negative == true && right.negative == left.negative)
+    else if (left.negative == right.negative)
     {
         if (new_left > new_right)
         {
@@ -304,6 +375,7 @@ int Rationnel::compRat(const Rationnel &left, const Rationnel &right) const
             return 0;
         }
     }
+    return 0;
 }
 
 bool Rationnel::operator<(const Rationnel &right) const { return compRat(*this, right) == -1; }
