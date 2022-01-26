@@ -42,7 +42,7 @@ void pivote(vector<vector<T>> &t,
         if (j != colonne)
             t.at(ligne).at(j) = t.at(ligne).at(j) / t.at(ligne).at(colonne);
 
-    t.at(ligne).at(colonne) = 1.0 / t.at(ligne).at(colonne);
+    t.at(ligne).at(colonne) = T(1) / t.at(ligne).at(colonne);
 }
 
 void TailleMatrice(int &nbreColonnes, int &nbreLignes, int valeur)
@@ -63,7 +63,7 @@ void entreeUtilisateur(int &entree)
 
 int main(void)
 {
-    /*int entree;
+    int entree;
     entreeUtilisateur(entree);
 
     int nbreColonnes;
@@ -71,9 +71,9 @@ int main(void)
 
     TailleMatrice(nbreColonnes, nbreLignes, entree);
 
-    vector<vector<long double>> t(nbreLignes, vector<long double>(nbreColonnes));
+    //vector<vector<long double>> t(nbreLignes, vector<long double>(nbreColonnes));
 
-    //vector<vector<Rationnel>> t(nbreLignes, vector<Rationnel>(nbreColonnes));
+    vector<vector<Rationnel>> t(nbreLignes, vector<Rationnel>(nbreColonnes));
     
     for (size_t i = 0; i < nbreLignes; i++)
         for (size_t j = 0; j < nbreColonnes; j++)
@@ -93,13 +93,27 @@ int main(void)
             pivote(t, i, j, nbreLignes, nbreColonnes);
         else
             cout << "pivot non valide!\n";
-    }*/
+    }
+    /*
     Rationnel test("-312/32");
-    cout << test << endl;
-    
     Rationnel test2("17/3");
-    cout << test2 << endl;
-
     Rationnel test3("-4");
-    cout << test3 << endl;
+    double test4 = 1.25;
+
+    cout << test + test2 << endl;
+    cout << test2 + test << endl;
+    cout << test - test2 << endl;
+    cout << test2 - test << endl;
+    cout << test * test3 << endl;
+    cout << test * test2 << endl;
+    cout << test3 * test4 << endl;
+
+    Rationnel div1("-3/4");
+    Rationnel div2("-7/5");
+    cout << div1 / div2 << endl;
+
+    Rationnel test5("1/2");
+    Rationnel test6("1/2");
+    cout << test5++ << endl;
+    cout << ++test6 << endl;*/
 }

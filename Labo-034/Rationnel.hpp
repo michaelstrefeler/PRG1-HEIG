@@ -15,12 +15,12 @@ private:
      * @param right right hand side of comparison
      * @return int -1 if left < right, 0 if equal else 1
      */
-    int compRationnel(const Rationnel &left, const Rationnel &right) const;
-    Rationnel simplify(Rationnel &fraction);
+    int compRat(const Rationnel &left, const Rationnel &right) const;
+    void simplify();
 public:
     Rationnel();
     Rationnel(const std::string &s);
-    Rationnel(double number);
+    Rationnel(const int &number);
     friend Rationnel operator*(double left, const Rationnel &right);
     friend std::ostream &operator<<(std::ostream &out, const Rationnel &s);
     friend std::istream &operator>>(std::istream &is, Rationnel &s);
@@ -32,8 +32,6 @@ public:
     Rationnel operator*(double right) const;
     Rationnel operator/(const Rationnel &right) const;
     Rationnel operator/(double right) const;
-    Rationnel operator%(const Rationnel &right) const;
-    Rationnel operator%(double right) const;
     Rationnel operator++(int);
     Rationnel &operator++();
     Rationnel operator--(int);

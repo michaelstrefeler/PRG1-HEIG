@@ -68,7 +68,8 @@ int Uint::comp(const Uint &left, const Uint &right) const
     return 1;
 }
 
-int compUint(const Uint &left, const Uint &right){
+int compUint(const Uint &left, const Uint &right)
+{
     if (left.value.size() == right.value.size())
     {
         for (auto l = left.value.crbegin(), r = right.value.crbegin();
