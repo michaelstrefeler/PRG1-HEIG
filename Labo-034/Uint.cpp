@@ -3,6 +3,7 @@
 #include <sstream>
 #include <functional>
 #include <random>
+// Timothé Van Hove helped a lot for this class
 
 Uint::Uint() {}
 

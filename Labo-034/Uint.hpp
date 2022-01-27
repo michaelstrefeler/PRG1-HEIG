@@ -8,7 +8,7 @@ const uint32_t ASCII_ZERO = 48;
 
 /**
  * @brief Unsigned ints of arbitrary size
- * 
+ * Timothé Van Hove helped a lot for this class
  */
 class Uint
 {

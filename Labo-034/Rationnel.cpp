@@ -176,9 +176,9 @@ Rationnel &Rationnel::operator--()
 Rationnel &Rationnel::operator+=(const Rationnel &right)
 {
     Rationnel temp = right;
+    numerator *= temp.denominator;
     temp.numerator *= denominator;
     denominator *= temp.denominator;
-    numerator *= temp.denominator;
     if (negative == true && right.negative == false)
     {
         if (numerator > temp.numerator)
@@ -230,9 +230,9 @@ Rationnel &Rationnel::operator+=(const Rationnel &right)
 Rationnel &Rationnel::operator-=(const Rationnel &right)
 {
     Rationnel temp = right;
+    numerator *= temp.denominator;
     temp.numerator *= denominator;
     denominator *= temp.denominator;
-    numerator *= temp.denominator;
     if (negative == true && right.negative == false)
     {
         if (numerator > temp.numerator)
@@ -285,7 +285,7 @@ Rationnel &Rationnel::operator-=(const Rationnel &right)
             numerator = temp.numerator - numerator;
             negative = true;
         }else{
-            numerator -= temp.numerator;
+            numerator = numerator - temp.numerator;
             negative = false;
         }
     }
@@ -351,7 +351,7 @@ Rationnel &Rationnel::operator-()
 int Rationnel::compRat(const Rationnel &left, const Rationnel &right) const
 {
     Uint new_left = left.numerator * right.denominator;
-    Uint new_right = right.numerator * right.denominator;
+    Uint new_right = right.numerator * left.denominator;
     if (left.negative == true && right.negative != left.negative)
     {
         return -1;
@@ -370,12 +370,14 @@ int Rationnel::compRat(const Rationnel &left, const Rationnel &right) const
         {
             return -1;
         }
-        else
+        else if(new_left == new_right)
         {
             return 0;
+        }else{
+            return 1;
         }
     }
-    return 0;
+    return 1;
 }
 
 bool Rationnel::operator<(const Rationnel &right) const { return compRat(*this, right) == -1; }
