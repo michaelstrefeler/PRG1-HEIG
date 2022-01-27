@@ -8,8 +8,9 @@ Rationnel::Rationnel(const std::string &s)
     std::string temp = s;
     std::string separator = "/";
     size_t pos = s.find_first_of(separator);
-    std::string top = s.substr(0, pos);
-    std::string bottom = s.substr(pos + 1);
+    std::string top = s.substr(0, pos); // numerator
+    std::string bottom = s.substr(pos + 1); // denominator
+
     // Reverse string so push_back puts the digits in the correct order
     reverse(top.begin(), top.end());
     reverse(bottom.begin(), bottom.end());
@@ -31,7 +32,10 @@ Rationnel::Rationnel(const std::string &s)
     }
     if (bottom.length() == 0 || bottom == top)
     {
-        denominator = 1;
+        if (denominator == 0)
+            throw std::invalid_argument("Not a valid number");
+        else
+            denominator = 1;
     }
     else
     {
@@ -47,6 +51,14 @@ Rationnel::Rationnel(const std::string &s)
             }
         }
     }
+    if (denominator == 0)
+        throw std::invalid_argument("Not a valid number");
+    if (numerator == 0 && negative == true)
+        throw std::invalid_argument("Not a valid number");
+
+    if (numerator == 0 && denominator == 0)
+        throw std::invalid_argument("Not a valid number");
+    
     simplify();
 }
 

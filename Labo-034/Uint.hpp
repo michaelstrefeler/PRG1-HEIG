@@ -92,8 +92,15 @@ public:
      * @return Uint base^exposant modulo mod
      */
     friend Uint mod_pow(Uint base, Uint exp, const Uint &mod);
-    friend int compUint(const Uint &left, const Uint &right);
     friend class Rationnel;
+
+    /**
+     * @brief Get the gcd of 2 Uints
+     * 
+     * @param a first Uint
+     * @param b second Uint
+     * @return Uint the gcd
+     */
     friend Uint get_gcd(Uint a, Uint b);
 
     /**
