@@ -188,7 +188,7 @@ Rationnel &Rationnel::operator+=(const Rationnel &right)
         }
         else if (numerator < temp.numerator)
         {
-            numerator = numerator - temp.numerator;
+            numerator = temp.numerator - numerator;
             negative = false;
         }
         else
@@ -213,7 +213,7 @@ Rationnel &Rationnel::operator+=(const Rationnel &right)
         }
         
     }
-    else if (negative == true && right.negative == negative)
+    else if (negative == true && right.negative == true)
     {
         numerator = numerator + temp.numerator;
         negative = true;
@@ -256,7 +256,7 @@ Rationnel &Rationnel::operator-=(const Rationnel &right)
         numerator += temp.numerator;
         negative = false;
     }
-    else if (negative == true && right.negative == negative)
+    else if (negative == true && right.negative == true)
     {
         if (numerator > temp.numerator)
         {
@@ -265,7 +265,7 @@ Rationnel &Rationnel::operator-=(const Rationnel &right)
         }
         else if (numerator < temp.numerator)
         {
-            numerator = numerator - temp.numerator;
+            numerator = temp.numerator - numerator;
             negative = false;
         }
         else
@@ -277,7 +277,7 @@ Rationnel &Rationnel::operator-=(const Rationnel &right)
     else
     {
         if(numerator > temp.numerator){
-            numerator -= temp.numerator;
+            numerator = numerator - temp.numerator;
             negative = false;
         }
         else if (numerator < temp.numerator)
@@ -285,7 +285,7 @@ Rationnel &Rationnel::operator-=(const Rationnel &right)
             numerator = temp.numerator - numerator;
             negative = true;
         }else{
-            numerator = numerator - temp.numerator;
+            numerator = 0;
             negative = false;
         }
     }
@@ -352,11 +352,11 @@ int Rationnel::compRat(const Rationnel &left, const Rationnel &right) const
 {
     Uint new_left = left.numerator * right.denominator;
     Uint new_right = right.numerator * left.denominator;
-    if (left.negative == true && right.negative != left.negative)
+    if (left.negative == true && right.negative == false)
     {
         return -1;
     }
-    else if (left.negative == false && right.negative != left.negative)
+    else if (left.negative == false && right.negative == true)
     {
         return 1;
     }
@@ -369,12 +369,8 @@ int Rationnel::compRat(const Rationnel &left, const Rationnel &right) const
         else if (new_left < new_right)
         {
             return -1;
-        }
-        else if(new_left == new_right)
-        {
-            return 0;
         }else{
-            return 1;
+            return 0;
         }
     }
     return 1;

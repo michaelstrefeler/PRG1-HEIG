@@ -2,6 +2,7 @@
 #include "Uint.hpp"
 #include <iostream>
 #include <iomanip>
+#include <limits>
 #include <vector>
 
 using namespace std;
@@ -35,7 +36,7 @@ void pivote(vector<vector<T>> &t,
 
     for (size_t i = 0; i < nbreLignes; i++)
         if (i != ligne)
-            t.at(i).at(colonne) = -t.at(i).at(colonne) / t.at(ligne).at(colonne);
+            t.at(i).at(colonne) = -(t.at(i).at(colonne)) / t.at(ligne).at(colonne);
 
     for (size_t j = 0; j < nbreColonnes; j++)
         if (j != colonne)
@@ -55,6 +56,11 @@ void entreeUtilisateur(int &entree)
     {
         cout << "Taille du systeme : ";
         cin >> entree;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
 
     } while (entree < 1);
 }

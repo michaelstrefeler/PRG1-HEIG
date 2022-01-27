@@ -69,25 +69,6 @@ int Uint::comp(const Uint &left, const Uint &right) const
     return 1;
 }
 
-int compUint(const Uint &left, const Uint &right)
-{
-    if (left.value.size() == right.value.size())
-    {
-        for (auto l = left.value.crbegin(), r = right.value.crbegin();
-             l != left.value.crend(); ++l, ++r)
-        {
-            if (*l < *r)
-                return -1;
-            else if (*l > *r)
-                return 1;
-        }
-        return 0;
-    }
-    else if (left.value.size() < right.value.size())
-        return -1;
-    return 1;
-}
-
 void Uint::fixValue()
 {
     while (value.size() > 1 && *(value.end() - 1) == 0)
