@@ -13,7 +13,7 @@ using namespace std;
 
 /**
  * @brief Generic function used to print a line of a vector<T>
- * 
+ *
  * @tparam T typename
  * @param ligne line to show
  */
@@ -42,7 +42,7 @@ void imprime_matrice(const vector<vector<T>> t)
 
 /**
  * @brief Function to pivot the matrix
- * 
+ *
  * @tparam T typename
  * @param t the matrix
  * @param ligne line
@@ -72,7 +72,7 @@ void pivote(vector<vector<T>> &t,
 
 /**
  * @brief Get the size of the matrix
- * 
+ *
  * @param nbreColonnes number of columns
  * @param nbreLignes  number of lines
  * @param valeur value entered by the user
@@ -85,7 +85,7 @@ void TailleMatrice(int &nbreColonnes, int &nbreLignes, int valeur)
 
 /**
  * @brief User input to get size of matrix - column for answers
- * 
+ *
  * @param entree input
  */
 void entreeUtilisateur(int &entree)

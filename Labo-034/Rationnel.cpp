@@ -333,6 +333,9 @@ Rationnel &Rationnel::operator*=(double right)
 Rationnel &Rationnel::operator/=(const Rationnel &right)
 {
     negative = !(negative == right.negative);
+    if(right.numerator == 0){
+        throw std::runtime_error("Zero division error");
+    }
     numerator *= right.denominator;
     denominator *= right.numerator;
     simplify();
