@@ -2,7 +2,12 @@
 #include <algorithm>
 #include <iostream>
 
-Rationnel::Rationnel() {}
+Rationnel::Rationnel() {
+    numerator = 0;
+    denominator = 1;
+    negative = false;
+}
+
 Rationnel::Rationnel(const std::string &s)
 {
     std::string temp = s;
@@ -32,6 +37,8 @@ Rationnel::Rationnel(const std::string &s)
     }
     if (bottom.length() == 0 || bottom == top)
     {
+        if(numerator == 0)
+            throw std::invalid_argument("Not a valid number");
         if (denominator == 0)
             throw std::invalid_argument("Not a valid number");
         else
@@ -249,7 +256,7 @@ Rationnel &Rationnel::operator-=(const Rationnel &right)
     {
         if (numerator > temp.numerator)
         {
-            numerator = numerator - temp.numerator;
+            numerator = numerator + temp.numerator;
             negative = true;
         }
         else if (numerator < temp.numerator)
@@ -372,8 +379,19 @@ int Rationnel::compRat(const Rationnel &left, const Rationnel &right) const
     {
         return 1;
     }
-    else if (left.negative == right.negative)
+    else if (left.negative == true && right.negative == true)
     {
+        if (new_left > new_right)
+        {
+            return -1;
+        }
+        else if (new_left < new_right)
+        {
+            return 1;
+        }else{
+            return 0;
+        }
+    }else{
         if (new_left > new_right)
         {
             return 1;
@@ -381,7 +399,9 @@ int Rationnel::compRat(const Rationnel &left, const Rationnel &right) const
         else if (new_left < new_right)
         {
             return -1;
-        }else{
+        }
+        else
+        {
             return 0;
         }
     }

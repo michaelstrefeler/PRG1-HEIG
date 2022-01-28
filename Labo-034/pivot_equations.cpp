@@ -11,7 +11,6 @@
 
 using namespace std;
 
-
 /**
  * @brief Generic function used to print a line of a vector<T>
  * 
@@ -63,7 +62,7 @@ void pivote(vector<vector<T>> &t,
 
     for (size_t i = 0; i < nbreLignes; i++)
         if (i != ligne)
-            t.at(i).at(colonne) = -(t.at(i).at(colonne)) / t.at(ligne).at(colonne);
+            t.at(i).at(colonne) = -t.at(i).at(colonne) / t.at(ligne).at(colonne);
 
     for (size_t j = 0; j < nbreColonnes; j++)
         if (j != colonne)
@@ -126,7 +125,7 @@ int main(void)
             {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                throw invalid_argument("Not a valud number");
+                throw invalid_argument("Not a valid number");
             }
         }
 
@@ -140,7 +139,7 @@ int main(void)
         {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            throw invalid_argument("Not a valud number");
+            throw invalid_argument("Not a valid number");
         }
         if ((i < nbreLignes) && (j < nbreColonnes) && (t.at(i).at(j) != 0.0))
             pivote(t, i, j, nbreLignes, nbreColonnes);
